@@ -37,10 +37,10 @@ class AbstractState(object):
         pass
 
     def process_event(self, event):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def value(self):
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def clear(self):
         pass

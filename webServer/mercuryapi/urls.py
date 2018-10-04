@@ -20,5 +20,5 @@ from api import views
 
 urlpatterns = [
     #path('admin/', admin.site.urls),
-    url(r'^ControllerInput/$', views.list_input),
+    url(r'^ControllerInput/$', views.ListControllerInput),
 ]
