@@ -19,7 +19,7 @@ class RobotNetwork:
         Ideally, this will run asynchronously
         loop argument should come from the main loop to keep consistency (I guess)
     """
-    async def getControllerStatus(self, loop, url):
+    async def getControllerStatus(self, url):
         #url = "OurWebServerAddress"
         async with self.asyncSession.get(url) as response:
             print(response.text)
@@ -30,5 +30,5 @@ class RobotNetwork:
         Ideally, this method will be run asynchronously
         loop argument should come from the main loop to keep consistency (I guess)
     """
-    async def updateSensorData(self, loop, url, sensorData):
+    def updateSensorData(self, url, sensorData):
         self.asyncSession.put(url, data=sensorData)
