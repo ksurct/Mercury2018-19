@@ -6,12 +6,13 @@
 """
 import asyncio
 import logging
-import networking
+from networking import RobotNetwork
 
 def mainLoop():
 	logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
 	logger = logging.getLogger(__name__)
 	loop = asyncio.get_event_loop()
+	robotNetwork = RobotNetwork()
 
 	try:
 		loop.run_forever()
