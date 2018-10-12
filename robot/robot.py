@@ -7,6 +7,7 @@
 import asyncio
 import logging
 from networking import RobotNetwork
+from components import *
 
 def mainLoop():
 	logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
