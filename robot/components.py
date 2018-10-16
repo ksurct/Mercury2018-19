@@ -2,6 +2,8 @@
     File that will hold the source code for hardware that will be controlled by the Pi.
     All of the servos, motors, sensors, LEDs, etc. will be here.
 """
+import asyncio
+import RPi.GPIO as GPIO
 
 class Component:
     def __init__(self):
@@ -27,9 +29,20 @@ class SensorComponent(Component):
         pass
 
 class MotorComponent(Component):
-    def __init__(self, name, controllerInput):
+    def __init__(self, name, controllerInput, directionPin, pwmPin):
         self.name = name
         self.controllerInput = controllerInput
+        self.directionPin = directionPin
+        self.pwmPin = pwmPin
+        self.motorPower = 0
+
+        GPIO.setup(self.directionPin, GPIO.OUT)
+        GPIO.setup(self.pwmPin, GPIO.OUT)
+        GPIO.output(self.directionPin, False)
+
+        self.PWM = GPIO.PWM(self.pwmPin, 20) #set PWM to 20 Hz as a max frequency
+        self.PWM.start(0)
+        self.PWM.setDutyCycle(0)
 
     def __del__(self):
         #Make sure robot stops moving
@@ -38,11 +51,33 @@ class MotorComponent(Component):
 
     async def updateSpeed(self, value):
         #Update motor speed
+        if (value < 0):
+            #Motor going in reverse
+            GPIO.output(self.directionPin, False)
+            pwm = -int(100 * value)
+            if (pwm > 100):
+                pwm = 100
+        elif (value > 0):
+            #Motor going forwards
+            GPIO.output(self.directionPin, True)
+            pwm = int(100 * value)
+            if (pwm > 100):
+                pwm = 100
+        else:
+            GPIO.output(self.directionPin, False)
+            pwm = 0
+        self.motorPower = pwm
+        self.PWM.ChangeDutyCycle(pwm)
         pass
 
     def doUpdate(self, value):
         #This is the method we will call from the main loop when parsing controller data
-        pass
+        if (self.name == 'leftMotor'):
+            self.updateSpeed(-1 * value)
+        elif (self.name == 'rightMotor'):
+            self.updateSpeed(value)
+        else:
+            pass
 
 class ServoComponent(Component):
     def __init__(self, name, controllerInput, homePosition):
