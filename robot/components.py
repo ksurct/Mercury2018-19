@@ -5,6 +5,8 @@
 import asyncio
 import RPi.GPIO as GPIO
 
+GPIO.setmode(GPIO.BOARD)
+
 class Component:
     def __init__(self):
         #Make sure that everything has an init method
@@ -42,14 +44,14 @@ class MotorComponent(Component):
 
         self.PWM = GPIO.PWM(self.pwmPin, 20) #set PWM to 20 Hz as a max frequency
         self.PWM.start(0)
-        self.PWM.setDutyCycle(0)
+        self.PWM.ChangeDutyCycle(0)
 
     def __del__(self):
         #Make sure robot stops moving
         self.updateSpeed(0)
         pass
 
-    async def updateSpeed(self, value):
+    def updateSpeed(self, value):
         #Update motor speed
         if (value < 0):
             #Motor going in reverse
