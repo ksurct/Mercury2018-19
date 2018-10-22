@@ -54,13 +54,13 @@ class MotorComponent(Component):
         if (value < 0):
             #Motor going in reverse
             GPIO.output(self.directionPin, False)
-            pwm = -int(100 * value)
+            pwm = -int(10 * value)
             if (pwm > 100):
                 pwm = 100
         elif (value > 0):
             #Motor going forwards
             GPIO.output(self.directionPin, True)
-            pwm = int(100 * value)
+            pwm = int(10 * value)
             if (pwm > 100):
                 pwm = 100
         else:
