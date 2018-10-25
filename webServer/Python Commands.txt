@@ -1,5 +1,0 @@
-python manage.py runserver //Runs the server from the command line
-//CTRL-C to terminate
-
-python manage.py runserver 8080 //Specifies the port
-
