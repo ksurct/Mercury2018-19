@@ -26,3 +26,12 @@ class ControllerInput(models.Model):
         val += "r_stick_x: {} | r_stick_y: {} | l_stick_x: {} | l_stick_y: {}".format(self.r_stick_x, self.r_stick_y, self.l_stick_x, self.l_stick_y)
         val += "upDPad: {} | downDPad: {} | leftDPad: {} | rightDPad: {}".format(self.up, self.down, self.left, self.right)
         return val
+
+    def createDictionary(self):
+        value = {
+        'a':self.a, 'b': self.b, 'x': self.x, 'y': self.y, 'start': self.start, 'select': self.select,
+        'r_trigger': self.r_trigger, 'l_trigger': self.l_trigger, 'r_bump': self.r_bump, 'l_bump': self.l_bump,
+        'r_stick_x': self.r_stick_x, 'r_stick_y': self.r_stick_y, 'l_stick_x': self.l_stick_x, 'l_stick_y': self.l_stick_y,
+        'up': self.up, 'down': self.down, 'left': self.left, 'right': self.right,
+        }
+        return value
