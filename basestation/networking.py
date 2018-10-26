@@ -3,20 +3,22 @@
 """
 import asyncio
 import aiohttp
+import json
+import requests
 
 class BasestationNetwork:
 	asyncSession = 0
 	def __init__(self):
-		self.asyncSession = aiohttp.ClientSession()
+		pass
 	
 	def __del__(self):
-		self.asyncSession.close()
+		pass
 
-	async def getSensorData(self, url):
-		async with self.asyncSession.get(url) as response:
-			print(response.text)
-			return response.text #this is the data that is returned from the web server
+	def getSensorData(self, url):
+		r = requests.get('http://' + url + '/')
+		print(r.text)
+		return r.text
 
 	def postClientData(self, url, controllerData):
-		self.asyncSession.put(url, data=controllerData)
+		r = requests.post('http://' + url + json.dumps(controllerData) + '/')
 		
