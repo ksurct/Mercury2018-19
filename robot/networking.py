@@ -4,12 +4,15 @@
 """
 import asyncio
 import aiohttp
+import requests
+import json
 
 class RobotNetwork:
     asyncSession = 0
     
-    def __init__(self):
+    def __init__(self, url):
         self.asyncSession = aiohttp.ClientSession()
+        self.url = url
 
     def __del__(self):
         self.asyncSession.close()
@@ -19,16 +22,19 @@ class RobotNetwork:
         Ideally, this will run asynchronously
         loop argument should come from the main loop to keep consistency (I guess)
     """
-    async def getControllerStatus(self, url):
-        #url = "OurWebServerAddress"
-        async with self.asyncSession.get(url) as response:
+    def getControllerStatus(self):
+        """async with self.asyncSession.get(url) as response:
             print(response.text)
-            return response.text #this is the data that is returned from the web server
+            return response.text #this is the data that is returned from the web server"""
+        r = requests.get(self.url + 'get/')
+        return json.loads(r.text)
 
     """
         This method will be used to PUT sensor data onto the web server
         Ideally, this method will be run asynchronously
         loop argument should come from the main loop to keep consistency (I guess)
     """
-    def updateSensorData(self, url, sensorData):
-        self.asyncSession.put(url, data=sensorData)
+    def updateSensorData(self, sensorData):
+        #self.asyncSession.put(url, data=sensorData)
+        #UPDATE SENSOR DICTIONARY ONCE WE KNOW WHAT SENSORS WE WANT
+        r = requests.post(self.url + 'sensorData/post/', 0)
