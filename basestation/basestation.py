@@ -16,6 +16,8 @@ import time
 
 class Basestation:
     def __init__(self):
+        print("Calibration in progress... DO NOT TOUCH CONTROLLER!!!!!!!!!!!")
+        time.sleep(3)
         Controller.init()
         self.controller = Controller(0)
         self.controllerData = {
@@ -25,9 +27,9 @@ class Basestation:
         'up': 0, 'down': 0, 'left': 0, 'right': 0,
         }
         self.defaultControllerValues = {
-        'a':0, 'b': 0, 'x': 0, 'y': 0, 'start': 0, 'select': 0,
-        'r_trigger': 0, 'l_trigger': 0, 'r_bump': 0, 'l_bump': 0,
-        'r_stick_x': 0, 'r_stick_y': 0, 'l_stick_x': 0, 'l_stick_y': 0,
+        'a':0, 'b': 0, 'x': 0, 'y': 3, 'start': 0, 'select': 0,
+        'r_trigger': 12, 'l_trigger': 0, 'r_bump': 1, 'l_bump': 0,
+        'r_stick_x': 0, 'r_stick_y': -5, 'l_stick_x': 0, 'l_stick_y': 0,
         'up': 0, 'down': 0, 'left': 0, 'right': 0,
         }
         self.basestationNetwork = BasestationNetwork()
@@ -39,12 +41,15 @@ class Basestation:
         
         # Get the event loop to work with
         loop = asyncio.get_event_loop()
+        self.basestationNetwork.postClientData('localhost:8000/update/', self.defaultControllerValues)
         
         try:
             #Make tasks and put them in loop
             #self.postDataTest()
-            while True:
+            """while True:
                 self.getControllerData()
+                print(self.controllerData)"""
+            self.postDataTest()
             #loop.run_forever()
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt detected. Exiting now.")
@@ -55,11 +60,11 @@ class Basestation:
 
     #@asyncio.coroutine
     def postDataTest(self):
-        for i in range(0, 100):
+        for i in range(0, 50):
             self.getControllerData()
-            #print(self.controllerData)
+            print(self.controllerData)
             print(self.controllerData['a'])
-            #self.basestationNetwork.postClientData('localhost:8000/update/', self.controllerData)
+            self.basestationNetwork.postClientData('localhost:8000/update/', self.controllerData)
 
     def getControllerData(self):
         self.controller.update()
@@ -67,8 +72,8 @@ class Basestation:
         self.controllerData['b'] = 1 if self.controller.b() else 0
         self.controllerData['x'] = 1 if self.controller.x() else 0
         self.controllerData['y'] = 1 if self.controller.y() else 0
-        self.controllerData['start'] = 1 if self.controller.start_button() else 0
-        self.controllerData['select'] = 1 if self.controller.select_button() else 0
+        self.controllerData['start'] = 1 if self.controller.select_button() else 0 #this is switched in xbox file
+        self.controllerData['select'] = 1 if self.controller.start_button() else 0
         self.controllerData['r_trigger'] = int(self.controller.right_trigger() >> 3)
         self.controllerData['l_trigger'] = int(self.controller.left_trigger() >> 3) 
         self.controllerData['r_bump'] = 1 if self.controller.right_bumper() else 0
@@ -86,7 +91,7 @@ class Basestation:
         self.controllerData['left'] = 1 if str(self.controller.hat).strip() == 'l' else 0
         self.controllerData['right'] = 1 if str(self.controller.hat).strip() == 'r' else 0
 
-        print(self.controllerData)
+        #print(self.controllerData)
         
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
