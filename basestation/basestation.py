@@ -46,10 +46,10 @@ class Basestation:
         try:
             #Make tasks and put them in loop
             #self.postDataTest()
-            """while True:
-                self.getControllerData()
-                print(self.controllerData)"""
-            self.postDataTest()
+            while True:
+                #self.getControllerData()
+                #print(self.controllerData)
+                self.postDataTest()
             #loop.run_forever()
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt detected. Exiting now.")
@@ -64,7 +64,7 @@ class Basestation:
             self.getControllerData()
             print(self.controllerData)
             print(self.controllerData['a'])
-            self.basestationNetwork.postClientData('localhost:8000/update/', self.controllerData)
+            self.basestationNetwork.postClientData('10.131.79.184:8000/update/', self.controllerData)
 
     def getControllerData(self):
         self.controller.update()
