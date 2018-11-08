@@ -11,11 +11,12 @@ class RobotNetwork:
     asyncSession = 0
     
     def __init__(self, url):
-        self.asyncSession = aiohttp.ClientSession()
+        #self.asyncSession = aiohttp.ClientSession()
         self.url = url
 
     def __del__(self):
-        self.asyncSession.close()
+        #self.asyncSession.close()
+        pass
     """
         This method will be used to GET controller data from the web server
         Once the data is received from the server, it is returned
