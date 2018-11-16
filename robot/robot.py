@@ -6,6 +6,7 @@
 """
 import asyncio
 import logging
+from time import time
 from networking import RobotNetwork
 from components import *
 
@@ -17,14 +18,29 @@ class Robot:
 		self.logger = logging.getLogger(__name__)
 		self.loop = asyncio.get_event_loop()
 		self.outputComponentList = []
+		self.sensorList = []
+		
 
 	def mainLoop(self):
 		try:
 			#loop.run_forever()
 			while True:
+				start_time = time()
+				#Get controller data and update motors, servos, LEDs
 				self.controllerData = self.network.getControllerStatus()
-				print(self.controllerData)
-			#pass
+				#print(self.controllerData)
+				for c in self.outputComponentList:
+					c.doUpdate(self.controllerData[c.controllerInput])
+
+				#Get sensor data and push to the web server
+				for s in self.sensorList:
+					s.doUpdate()
+				############################
+				# UNCOMMENT THE LINE BELOW ONCE WE KNOW WHAT SENSORS WE NEED AND SUCH
+				#self.network.updateSensorData(self.sensorList)
+				############################
+				final_time = time() - start_time
+				self.logger.info('Loop time is {0:.6f}'.format(final_time))
 		except KeyboardInterrupt:
 			self.logger.info("Keyboard interrupt detected. Exiting now.")
 		finally:

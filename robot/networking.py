@@ -38,4 +38,4 @@ class RobotNetwork:
     def updateSensorData(self, sensorData):
         #self.asyncSession.put(url, data=sensorData)
         #UPDATE SENSOR DICTIONARY ONCE WE KNOW WHAT SENSORS WE WANT
-        r = requests.post(self.url + 'sensorData/post/', 0)
+        r = requests.post(self.url + 'sensorData/post/', 0)# json.dumps(sensorData))

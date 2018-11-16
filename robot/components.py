@@ -9,7 +9,7 @@ import Adafruit_PCA9685
 GPIO.setmode(GPIO.BOARD)
 
 class Component:
-    def __init__(self):
+    def __init__(self, controllerInput):
         #Make sure that everything has an init method
         raise NotImplementedError()
 
