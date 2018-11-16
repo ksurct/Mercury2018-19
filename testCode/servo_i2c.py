@@ -28,7 +28,7 @@ try:
         #if (webStatus["a"] == 1):
         pwm.set_pwm(0, 0, 400)
         print ("ON")
-        time.sleep(1)
+        time.sleep(3)
         #else:
         pwm.set_pwm(0, 0, 0)
         print ("OFF")

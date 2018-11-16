@@ -1,22 +1,42 @@
+#This is test code to sweep a servo
+import sys
+sys.path.append("..")
 import RPi.GPIO as GPIO
 import time as time
+from robot.networking import RobotNetwork
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(18, GPIO.OUT)
+#from __future__ import division
 
-servo = GPIO.PWM(18,500)
-servo.start(0)
+# Import the PCA9685 module.
+import Adafruit_PCA9685
+
+# Initialise the PCA9685 using the default address (0x40).
+pwm = Adafruit_PCA9685.PCA9685()
+
+# Alternatively specify a different address and/or bus:
+#pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
+
+# Configure min and max servo pulse lengths
+servo_min = 150  # Min pulse length out of 4096
+servo_max = 600  # Max pulse length out of 4096
+
+pwm.set_pwm_freq(60)
+
+network = RobotNetwork('http://10.135.79.80:8000/')
+
 try:
     while True:
-        for dc in range(20,100,1):
-            servo.ChangeDutyCycle(dc)
-            time.sleep(0.1)
-            print (dc)
-        for dc in range(100,20,-1):
-            servo.ChangeDutyCycle(dc)
-            time.sleep(0.1)
-            print (dc)
+        #webStatus = network.getControllerStatus()
+        #if (webStatus["a"] == 1):
+        pwm.set_pwm(0, 0, 300)
+        print ("400")
+        time.sleep(1)
+        #else:
+        pwm.set_pwm(0, 0, 100)
+        print ("300")
+        time.sleep(1)
 except KeyboardInterrupt:
     pass
-servo.stop()
+
+pwm.set_pwm(0, 0, 0)
 GPIO.cleanup();
