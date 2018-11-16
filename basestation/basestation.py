@@ -32,7 +32,8 @@ class Basestation:
         'r_stick_x': 0, 'r_stick_y': -5, 'l_stick_x': 0, 'l_stick_y': 0,
         'up': 0, 'down': 0, 'left': 0, 'right': 0,
         }
-        self.basestationNetwork = BasestationNetwork()
+        #self.basestationNetwork = BasestationNetwork('10.135.79.184:8000')
+        self.basestationNetwork = BasestationNetwork('0490f3a8.ngrok.io')
 
     def mainLoop(self):
         # Setup Logging
@@ -41,11 +42,12 @@ class Basestation:
         
         # Get the event loop to work with
         loop = asyncio.get_event_loop()
-        self.basestationNetwork.postClientData('localhost:8000/update/', self.defaultControllerValues)
+        #self.basestationNetwork.postClientData(self.defaultControllerValues)
         
         try:
             #Make tasks and put them in loop
             #self.postDataTest()
+            print("Inside try")
             while True:
                 #self.getControllerData()
                 #print(self.controllerData)
@@ -64,7 +66,11 @@ class Basestation:
             self.getControllerData()
             print(self.controllerData)
             print(self.controllerData['a'])
-            self.basestationNetwork.postClientData('10.131.79.184:8000/update/', self.controllerData)
+            self.basestationNetwork.postClientData(self.controllerData)
+
+    def getDataTest(self):
+        data = self.basestationNetwork.getSensorData()
+        print(data)
 
     def getControllerData(self):
         self.controller.update()

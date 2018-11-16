@@ -11,11 +11,12 @@ from components import *
 
 class Robot:
 	def __init__(self):
-		self.network = RobotNetwork('http://10.135.79.80:8000/')
+		self.network = RobotNetwork('10.135.79.80:8000')
 		self.controllerData = ''
 		logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
 		self.logger = logging.getLogger(__name__)
 		self.loop = asyncio.get_event_loop()
+		self.outputComponentList = []
 
 	def mainLoop(self):
 		try:

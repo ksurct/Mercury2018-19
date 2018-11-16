@@ -4,6 +4,7 @@
 """
 import asyncio
 import RPi.GPIO as GPIO
+import Adafruit_PCA9685
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -17,9 +18,8 @@ class Component:
         raise NotImplementedError()
 
 class SensorComponent(Component):
-    def __init__(self, name, controllerInput, channel):
+    def __init__(self, name, channel):
         self.name = name
-        self.controllerInput = controllerInput
         self.channel = channel
 
     def __del__(self):
@@ -29,6 +29,9 @@ class SensorComponent(Component):
     async def getSensorValues(self):
         #Get sensor values from robot asynchronously and return them in some data type
         pass
+
+    async def doUpdate(self, value):
+        return self.getSensorValues()
 
 class MotorComponent(Component):
     def __init__(self, name, controllerInput, directionPin, pwmPin):
@@ -82,22 +85,32 @@ class MotorComponent(Component):
             pass
 
 class ServoComponent(Component):
-    def __init__(self, name, controllerInput, homePosition):
+    def __init__(self, name, controllerInput, channel, homePosition, minValue, maxValue):
+        self.pwm = Adafruit_PCA9685.PCA9685()
+        self.pwm.set_pwm_freq(60)
         self.name = name
         self.controllerInput = controllerInput
+        self.channel = channel
         self.homePosition = homePosition
+        self.minValue = minValue
+        self.maxValue = maxValue
 
     def __del__(self):
         #Make servo return to some predefined "home" position
+        self.updatePosition(self.homePosition)
         pass
 
-    async def updatePosition(self, value):
+    def updatePosition(self, value):
         #Update servo position
-        pass
+        if (value >= self.minValue and value <= self.maxValue):
+            self.pwm.set_pwm(self.channel, 0, value)
+            return True
+        else:
+            return False
     
     def doUpdate(self, value):
         #Method called from main loop when parsing data
-        pass
+        return self.updatePosition(value)
 
 class LEDComponent(Component):
     def __init__(self, name, controllerInput):

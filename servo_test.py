@@ -22,7 +22,7 @@ servo_max = 600  # Max pulse length out of 4096
 
 pwm.set_pwm_freq(60)
 
-network = RobotNetwork('http://10.135.79.80:8000/')
+network = RobotNetwork('10.135.79.80:8000')
 
 try:
     while True:

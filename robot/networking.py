@@ -12,7 +12,7 @@ class RobotNetwork:
     
     def __init__(self, url):
         #self.asyncSession = aiohttp.ClientSession()
-        self.url = url
+        self.url = "https://" + url + "/"
 
     def __del__(self):
         #self.asyncSession.close()
