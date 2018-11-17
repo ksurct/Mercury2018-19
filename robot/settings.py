@@ -7,6 +7,11 @@ WEB_SERVER_ADDRESS = "10.135.79.80"
 WEB_SERVER_PORT = "8000"
 
 ###################################
+#   Sensor Settings
+###################################
+
+
+###################################
 #   Motor Settings
 ###################################
 
@@ -30,3 +35,4 @@ MOTOR_FOUR_NAME = ""
 MOTOR_FOUR_CONTROLLER_INPUT = ''
 MOTOR_FOUR_DIRECTION_PIN = 0
 MOTOR_FOUR_PWM_PIN = 0
+
