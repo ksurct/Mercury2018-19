@@ -15,7 +15,7 @@ WEB_SERVER_PORT = "8000"
 #   Motor Settings
 ###################################
 
-# Complete this fields when these motors on constructed
+# Complete this fields when these motors are connected
 MOTOR_ONE_NAME = ""
 MOTOR_ONE_CONTROLLER_INPUT = ''
 MOTOR_ONE_DIRECTION_PIN = 0
@@ -36,3 +36,12 @@ MOTOR_FOUR_CONTROLLER_INPUT = ''
 MOTOR_FOUR_DIRECTION_PIN = 0
 MOTOR_FOUR_PWM_PIN = 0
 
+###################################
+#   Servo Settings
+###################################
+SERVO_ONE_NAME = ""
+SERVO_ONE_CONTROLLER_INPUT = ''
+SERVO_ONE_CHANNEL = 0
+SERVO_ONE_HOME = 0
+SERVO_ONE_MIN = 0
+SERVO_ONE_MAX = 255
