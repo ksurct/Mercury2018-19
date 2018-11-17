@@ -19,6 +19,10 @@ class Robot:
 		self.logger = logging.getLogger(__name__)
 		self.loop = asyncio.get_event_loop()
 
+		# To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
+		# and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
+		# We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
+		# Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f  
 		self.outputComponentList = [
 			# motors
 			
@@ -28,8 +32,15 @@ class Robot:
 			# MotorComponent(MOTOR_THREE_NAME, MOTOR_THREE_CONTROLLER_INPUT, MOTOR_THREE_DIRECTION_PIN, MOTOR_THREE_PWM_PIN),
 			# MotorComponent(MOTOR_FOUR_NAME, MOTOR_FOUR_CONTROLLER_INPUT, MOTOR_FOUR_DIRECTION_PIN, MOTOR_FOUR_PWM_PIN),
 			
+			# servos
+			
 			# TODO uncomment htis when these fields are programmed in settings.py
 			# ServoComponent(SERVO_ONE_NAME, SERVO_ONE_CONTROLLER_INPUT, SERVO_ONE_CHANNEL, SERVO_ONE_HOME, SERVO_ONE_MIN, SERVO_ONE_MAX)
+			
+			# leds
+
+			# TODO uncomment htis when these fields are programmed in settings.py
+			#LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT)
 			]
 		
 		
