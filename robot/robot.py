@@ -7,18 +7,31 @@
 import asyncio
 import logging
 from time import time
-from networking import RobotNetwork
-from components import *
+from robot.networking import RobotNetwork
+from robot.components import *
+from robot.settings import * # this gets us constants such as WEB_SERVER_ADDRESS
 
 class Robot:
 	def __init__(self):
-		self.network = RobotNetwork('10.135.79.80:8000')
+		self.network = RobotNetwork(WEB_SERVER_ADDRESS + ":" + WEB_SERVER_PORT)
 		self.controllerData = ''
 		logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
 		self.logger = logging.getLogger(__name__)
 		self.loop = asyncio.get_event_loop()
-		self.outputComponentList = []
+
+		self.outputComponentList = [
+			# motors
+			
+			# TODO Uncomment this when these fields are programmed in Settings.py
+			# MotorComponent(MOTOR_ONE_NAME, MOTOR_ONE_CONTROLLER_INPUT, MOTOR_ONE_DIRECTION_PIN, MOTOR_ONE_PWM_PIN),
+			# MotorComponent(MOTOR_TWO_NAME, MOTOR_TWO_CONTROLLER_INPUT, MOTOR_TWO_DIRECTION_PIN, MOTOR_TWO_PWM_PIN),
+			# MotorComponent(MOTOR_THREE_NAME, MOTOR_THREE_CONTROLLER_INPUT, MOTOR_THREE_DIRECTION_PIN, MOTOR_THREE_PWM_PIN),
+			# MotorComponent(MOTOR_FOUR_NAME, MOTOR_FOUR_CONTROLLER_INPUT, MOTOR_FOUR_DIRECTION_PIN, MOTOR_FOUR_PWM_PIN),
+			]
+		
+		
 		self.sensorList = []
+
 		
 
 	def mainLoop(self):
