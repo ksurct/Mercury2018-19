@@ -1,0 +1,20 @@
+Right Trigger: drive right motors
+Left Trigger: drive left motors
+Right Button: right motors direction modifier: 0 = forward, 1 = backward
+Left Button: left motors direction modifier: 0 = forward, 1 = backward
+
+Left Stick Y: control pick-up arm
+Right Stick Y: control camera arm
+
+Select: precision control/firing mode
+Start: launch ping pong ball
+
+Up: pick-up arm preset
+Down: pick-up arm preset
+Left: pick-up arm preset
+Right: pick-up arm preset
+
+A: headlight on/off
+B: camera preset
+X: camera preset
+Y: camera preset
