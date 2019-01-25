@@ -21,19 +21,19 @@ class Basestation:
         Controller.init()
         self.controller = Controller(0)
         self.controllerData = {
-        'a':0, 'b': 0, 'x': 0, 'y': 0, 'start': 0, 'select': 0,
-        'r_trigger': 0, 'l_trigger': 0, 'r_bump': 0, 'l_bump': 0,
-        'r_stick_x': 0, 'r_stick_y': 0, 'l_stick_x': 0, 'l_stick_y': 0,
-        'up': 0, 'down': 0, 'left': 0, 'right': 0,
+        'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
+        'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
+        'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
+        'u': 0, 'd': 0, 'l': 0, 'r': 0,
         }
         self.defaultControllerValues = {
-        'a':0, 'b': 0, 'x': 0, 'y': 3, 'start': 0, 'select': 0,
-        'r_trigger': 12, 'l_trigger': 0, 'r_bump': 1, 'l_bump': 0,
-        'r_stick_x': 0, 'r_stick_y': -5, 'l_stick_x': 0, 'l_stick_y': 0,
-        'up': 0, 'down': 0, 'left': 0, 'right': 0,
+        'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
+        'rt': 12, 'lt': 0, 'rb': 0, 'lb': 0,
+        'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
+        'u': 0, 'd': 0, 'l': 0, 'r': 0,
         }
-        #self.basestationNetwork = BasestationNetwork('10.135.79.184:8000')
-        self.basestationNetwork = BasestationNetwork('0490f3a8.ngrok.io')
+        self.basestationNetwork = BasestationNetwork('70.179.163.182:8000') #address for Dummy at Reece's apartment - subject to change closer to comp
+        #self.basestationNetwork = BasestationNetwork('0490f3a8.ngrok.io')
 
     def mainLoop(self):
         # Setup Logging
@@ -78,24 +78,24 @@ class Basestation:
         self.controllerData['b'] = 1 if self.controller.b() else 0
         self.controllerData['x'] = 1 if self.controller.x() else 0
         self.controllerData['y'] = 1 if self.controller.y() else 0
-        self.controllerData['start'] = 1 if self.controller.select_button() else 0 #this is switched in xbox file
-        self.controllerData['select'] = 1 if self.controller.start_button() else 0
-        self.controllerData['r_trigger'] = int(self.controller.right_trigger() >> 3)
-        self.controllerData['l_trigger'] = int(self.controller.left_trigger() >> 3) 
-        self.controllerData['r_bump'] = 1 if self.controller.right_bumper() else 0
-        self.controllerData['l_bump'] = 1 if self.controller.left_bumper() else 0
+        self.controllerData['st'] = 1 if self.controller.select_button() else 0 #this is switched in xbox file
+        self.controllerData['se'] = 1 if self.controller.start_button() else 0
+        self.controllerData['rt'] = int(self.controller.right_trigger() >> 3)
+        self.controllerData['lt'] = int(self.controller.left_trigger() >> 3) 
+        self.controllerData['rb'] = 1 if self.controller.right_bumper() else 0
+        self.controllerData['lb'] = 1 if self.controller.left_bumper() else 0
         r_stick_x = round(self.controller.right_x(), 1)
         r_stick_y = round(self.controller.right_y(), 1)
         l_stick_x = round(self.controller.left_x(), 1)
         l_stick_y = round(self.controller.left_y(), 1)
-        self.controllerData['r_stick_x'] = int(10*r_stick_x) if abs(r_stick_x) > 0.1 else 0
-        self.controllerData['r_stick_y'] = int(-10*r_stick_y) if abs(r_stick_y) > 0.1 else 0
-        self.controllerData['l_stick_x'] = int(10*l_stick_x) if abs(l_stick_x) > 0.1 else 0
-        self.controllerData['l_stick_y'] = int(-10*l_stick_y) if abs(l_stick_y) > 0.1 else 0
-        self.controllerData['up'] = 1 if str(self.controller.hat).strip() == 'u' else 0
-        self.controllerData['down'] = 1 if str(self.controller.hat).strip() == 'd' else 0
-        self.controllerData['left'] = 1 if str(self.controller.hat).strip() == 'l' else 0
-        self.controllerData['right'] = 1 if str(self.controller.hat).strip() == 'r' else 0
+        self.controllerData['rsx'] = int(10*r_stick_x) if abs(r_stick_x) > 0.1 else 0
+        self.controllerData['rsy'] = int(-10*r_stick_y) if abs(r_stick_y) > 0.1 else 0
+        self.controllerData['lsx'] = int(10*l_stick_x) if abs(l_stick_x) > 0.1 else 0
+        self.controllerData['lsy'] = int(-10*l_stick_y) if abs(l_stick_y) > 0.1 else 0
+        self.controllerData['u'] = 1 if str(self.controller.hat).strip() == 'u' else 0
+        self.controllerData['d'] = 1 if str(self.controller.hat).strip() == 'd' else 0
+        self.controllerData['l'] = 1 if str(self.controller.hat).strip() == 'l' else 0
+        self.controllerData['r'] = 1 if str(self.controller.hat).strip() == 'r' else 0
 
         #print(self.controllerData)
         
