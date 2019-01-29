@@ -13,11 +13,12 @@ from xbox import Controller
 import logging
 from networking import BasestationNetwork
 import time
+import requests
 
 class Basestation:
     def __init__(self):
         print("Calibration in progress... DO NOT TOUCH CONTROLLER!!!!!!!!!!!")
-        time.sleep(3)
+        time.sleep(.3) #TODO Change this back to 3 once exception testing is done
         Controller.init()
         self.controller = Controller(0)
         self.controllerData = {
@@ -32,7 +33,8 @@ class Basestation:
         'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
         'u': 0, 'd': 0, 'l': 0, 'r': 0,
         }
-        self.basestationNetwork = BasestationNetwork('70.179.163.182:8000') #address for Dummy at Reece's apartment - subject to change closer to comp
+        #self.basestationNetwork = BasestationNetwork('70.179.163.182:8000') #address for Dummy at Reece's apartment - subject to change closer to comp
+        self.basestationNetwork = BasestationNetwork('localhost:8000') #address for server running on this computer
         #self.basestationNetwork = BasestationNetwork('0490f3a8.ngrok.io')
 
     def mainLoop(self):
@@ -55,6 +57,7 @@ class Basestation:
             #loop.run_forever()
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt detected. Exiting now.")
+
         finally:
             #ensure robot loop gets closed
             loop.close()
@@ -62,11 +65,10 @@ class Basestation:
 
     #@asyncio.coroutine
     def postDataTest(self):
-        for i in range(0, 50):
-            self.getControllerData()
-            print(self.controllerData)
-            print(self.controllerData['a'])
-            self.basestationNetwork.postClientData(self.controllerData)
+        self.getControllerData()
+        #print(self.controllerData)
+        #print(self.controllerData['a'])
+        self.basestationNetwork.postClientData(self.controllerData)
 
     def getDataTest(self):
         data = self.basestationNetwork.getSensorData()

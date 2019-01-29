@@ -6,11 +6,14 @@ import aiohttp
 import json
 import requests
 import time
+import logging
 
 class BasestationNetwork:
 	asyncSession = 0
 	def __init__(self, url):
 		self.url = 'http://' + url
+		logging.getLogger("requests").setLevel(logging.WARNING)
+		logging.getLogger("urllib3").setLevel(logging.WARNING)
 		pass
 	
 	def __del__(self):
@@ -22,6 +25,10 @@ class BasestationNetwork:
 		return r.text
 
 	def postClientData(self, controllerData):
-		r = requests.post(self.url + '/update/' + json.dumps(controllerData) + '/')
-		time.sleep(.1)
+		try:
+			r = requests.post(self.url + '/update/' + json.dumps(controllerData) + '/')
+			time.sleep(.1)
+		except (ConnectionRefusedError, ConnectionResetError, ConnectionError, requests.exceptions.ConnectionError) as err:
+			print("Error sending data to web server. Will retry in 2 seconds: " + time.ctime())
+			time.sleep(2)
 		
