@@ -6,13 +6,14 @@ import asyncio
 import aiohttp
 import requests
 import json
+import time
 
 class RobotNetwork:
     asyncSession = 0
     
     def __init__(self, url):
         #self.asyncSession = aiohttp.ClientSession()
-        self.url = "https://" + url + "/"
+        self.url = "http://" + url + "/"
 
     def __del__(self):
         #self.asyncSession.close()
@@ -27,8 +28,12 @@ class RobotNetwork:
         """async with self.asyncSession.get(url) as response:
             print(response.text)
             return response.text #this is the data that is returned from the web server"""
-        r = requests.get(self.url + 'get/')
-        return json.loads(r.text)
+        try:
+            r = requests.get(self.url + 'get/')
+            return json.loads(r.text)
+        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError) as err:
+            print("Error connecting to server, waiting 2 seconds: " + time.ctime())
+            time.sleep(2)
 
     """
         This method will be used to PUT sensor data onto the web server

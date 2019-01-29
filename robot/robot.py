@@ -6,7 +6,7 @@
 """
 import asyncio
 import logging
-import time
+from time import time
 from networking import RobotNetwork
 from components import *
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
@@ -49,31 +49,31 @@ class Robot:
 		
 
 	def mainLoop(self):
-		try:
-			#loop.run_forever()
-			while True:
-				start_time = time()
-				#Get controller data and update motors, servos, LEDs
-				self.controllerData = self.network.getControllerStatus()
-				#print(self.controllerData)
-				for c in self.outputComponentList:
-					c.doUpdate(self.controllerData[c.controllerInput])
+            try:
+                #loop.run_forever()
+                while True:
+                    start_time = time()
+                    #Get controller data and update motors, servos, LEDs
+                    self.controllerData = self.network.getControllerStatus()
+                    print(self.controllerData)
+                    #for c in self.outputComponentList:
+                        #c.doUpdate(self.controllerData[c.controllerInput])
 
-				#Get sensor data and push to the web server
-				for s in self.sensorList:
-					s.doUpdate()
-				############################
-				# UNCOMMENT THE LINE BELOW ONCE WE KNOW WHAT SENSORS WE NEED AND SUCH
-				#self.network.updateSensorData(self.sensorList)
-				############################
-				final_time = time() - start_time
-				self.logger.info('Loop time is {0:.6f}'.format(final_time))
-		except KeyboardInterrupt:
-			self.logger.info("Keyboard interrupt detected. Exiting now.")
-		finally:
-			#ensure robot loop gets closed
-			self.loop.close()
-			self.logger.info("Event loop closed. Exiting program")
+                    #Get sensor data and push to the web server
+                    for s in self.sensorList:
+                        s.doUpdate()
+                    ############################
+                    # UNCOMMENT THE LINE BELOW ONCE WE KNOW WHAT SENSORS WE NEED AND SUCH
+                    #self.network.updateSensorData(self.sensorList)
+                    ############################
+                    final_time = time() - start_time
+                    self.logger.info('Loop time is {0:.6f}'.format(final_time))
+            except KeyboardInterrupt:
+                self.logger.info("Keyboard interrupt detected. Exiting now.")
+            finally:
+                #ensure robot loop gets closed
+                self.loop.close()
+                self.logger.info("Event loop closed. Exiting program")
 
 if __name__ == '__main__':
     r = Robot()
