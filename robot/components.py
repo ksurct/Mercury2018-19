@@ -45,7 +45,7 @@ class MotorComponent(Component):
         GPIO.setup(self.pwmPin, GPIO.OUT)
         GPIO.output(self.directionPin, False)
 
-        self.PWM = GPIO.PWM(self.pwmPin, 20) #set PWM to 20 Hz as a max frequency
+        self.PWM = GPIO.PWM(self.pwmPin, 1000) #set PWM to 1000 Hz as a max frequency
         self.PWM.start(0)
         self.PWM.ChangeDutyCycle(0)
 
@@ -59,13 +59,13 @@ class MotorComponent(Component):
         if (value < 0):
             #Motor going in reverse
             GPIO.output(self.directionPin, False)
-            pwm = -int(10 * value)
+            pwm = -int(value)
             if (pwm > 100):
                 pwm = 100
         elif (value > 0):
             #Motor going forwards
             GPIO.output(self.directionPin, True)
-            pwm = int(10 * value)
+            pwm = int(value)
             if (pwm > 100):
                 pwm = 100
         else:

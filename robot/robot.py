@@ -6,10 +6,10 @@
 """
 import asyncio
 import logging
-from time import time
-from robot.networking import RobotNetwork
-from robot.components import *
-from robot.settings import * # this gets us constants such as WEB_SERVER_ADDRESS
+import time
+from networking import RobotNetwork
+from components import *
+from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
 
 class Robot:
 	def __init__(self):
@@ -76,5 +76,30 @@ class Robot:
 			self.logger.info("Event loop closed. Exiting program")
 
 if __name__ == '__main__':
-	r = Robot()
-	r.mainLoop()
+    r = Robot()
+    r.mainLoop()
+    """GPIO.cleanup()
+    m1 = MotorComponent('leftMotor', 'l_stick', 11, 18)
+    m2 = MotorComponent('leftMotor', 'l_stick', 13, 15)
+    val1 = 0
+    val2 = 100
+    while True:
+        while val1 < 100:
+            print(str(val1) + " " + str(val2))
+            m1.doUpdate(val1)
+            m2.doUpdate(val2)
+            time.sleep(.1)
+            val1 += 1
+            val2 -= 1
+        #time.sleep(1)
+        while val1 > 0:
+            print(str(val1) + " " + str(val2))
+            m1.doUpdate(val1)
+            m2.doUpdate(val2)
+            time.sleep(.1)
+            val1 -= 1
+            val2 += 1
+    #m.doUpdate(5)
+    #while True:
+    #    pass
+    GPIO.cleanup()"""
