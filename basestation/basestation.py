@@ -18,18 +18,12 @@ import requests
 class Basestation:
     def __init__(self):
         print("Calibration in progress... DO NOT TOUCH CONTROLLER!!!!!!!!!!!")
-        time.sleep(.3) #TODO Change this back to 3 once exception testing is done
+        time.sleep(3) #TODO Change this back to 3 once exception testing is done
         Controller.init()
         self.controller = Controller(0)
         self.controllerData = {
         'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
         'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
-        'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
-        'u': 0, 'd': 0, 'l': 0, 'r': 0,
-        }
-        self.defaultControllerValues = {
-        'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
-        'rt': 12, 'lt': 0, 'rb': 0, 'lb': 0,
         'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
         'u': 0, 'd': 0, 'l': 0, 'r': 0,
         }

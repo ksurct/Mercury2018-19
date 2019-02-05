@@ -10,6 +10,13 @@ import time
 
 class RobotNetwork:
     asyncSession = 0
+
+    defaultControllerValues = {
+        'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
+        'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
+        'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
+        'u': 0, 'd': 0, 'l': 0, 'r': 0,
+    }
     
     def __init__(self, url):
         #self.asyncSession = aiohttp.ClientSession()
@@ -30,10 +37,10 @@ class RobotNetwork:
             return response.text #this is the data that is returned from the web server"""
         try:
             r = requests.get(self.url + 'get/')
-            return json.loads(r.text)
-        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError) as err:
-            print("Error connecting to server, waiting 2 seconds: " + time.ctime())
-            time.sleep(2)
+            return (json.loads(r.text), True)
+        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+            #Above should be the list of all errors we encounter, but we can update the list if needed by just adding new errors to the list
+            return (self.defaultControllerValues, False)
 
     """
         This method will be used to PUT sensor data onto the web server
