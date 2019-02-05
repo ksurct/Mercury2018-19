@@ -6,10 +6,10 @@
 """
 import asyncio
 import logging
-from time import time, ctime, sleep
-from robot.networking import RobotNetwork
-from robot.components import *
-from robot.settings import * # this gets us constants such as WEB_SERVER_ADDRESS
+from time import sleep
+from networking import RobotNetwork
+from components import *
+from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
 
 class Robot:
     def __init__(self):
@@ -53,7 +53,7 @@ class Robot:
                 self.controllerDataTuple = self.network.getControllerStatus()
                 self.controllerData = self.controllerDataTuple[0]
                 if(self.controllerDataTuple[1] == False):
-                    self.logger.info("Unable to get controller data. Trying again soon: " + ctime()) #Shows error message and current time
+                    self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(1)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
