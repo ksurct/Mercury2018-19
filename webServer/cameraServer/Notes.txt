@@ -1,7 +1,0 @@
-Source: https://github.com/Mjrovai/Video-Streaming-With-Flask
-
-To run server:
-	Navigate to this folder in a terminal window
-	run 'sudo python appCam.py'
-	
-You will need to get the IP of the Pi it is running on in order to connect to it on a browser.
