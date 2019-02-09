@@ -3,14 +3,14 @@ from django.db import models
 # Create your models here.
 
 class SensorData(models.Model):
-    qfl = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    qfr = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    qbl = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    qbr = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    df = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    db = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    dl = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
-    dr = models.DecimalField(default = 0, max_digits=20, decimal_places=15)
+    qfl = models.IntegerField(default = 0)
+    qfr = models.IntegerField(default = 0)
+    qbl = models.IntegerField(default = 0)
+    qbr = models.IntegerField(default = 0)
+    df = models.IntegerField(default = 0)
+    db = models.IntegerField(default = 0)
+    dl = models.IntegerField(default = 0)
+    dr = models.IntegerField(default = 0)
 
     def __str__(self):
         val = "qfl: {} | qfr: {} | qbl: {} | qbr: {}\n".format(self.qfl, self.qfr, self.qbl, self.qbr)

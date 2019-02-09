@@ -2,8 +2,6 @@
     Class that will hold all networking information for the Pi.
     This class will define the GET request for controller data, as well as the UPDATE request for sensor data.
 """
-import asyncio
-import aiohttp
 import requests
 import json
 import time
@@ -20,7 +18,7 @@ class RobotNetwork:
     
     def __init__(self, url):
         #self.asyncSession = aiohttp.ClientSession()
-        self.url = "http://" + url + "/"
+        self.url = "http://" + url
 
     def __del__(self):
         #self.asyncSession.close()
@@ -36,7 +34,7 @@ class RobotNetwork:
             print(response.text)
             return response.text #this is the data that is returned from the web server"""
         try:
-            r = requests.get(self.url + 'get/')
+            r = requests.get(self.url + '/controller/get/')
             return (json.loads(r.text), True)
         except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
             #Above should be the list of all errors we encounter, but we can update the list if needed by just adding new errors to the list
@@ -50,4 +48,4 @@ class RobotNetwork:
     def updateSensorData(self, sensorData):
         #self.asyncSession.put(url, data=sensorData)
         #UPDATE SENSOR DICTIONARY ONCE WE KNOW WHAT SENSORS WE WANT
-        r = requests.post(self.url + 'sensorData/post/', 0)# json.dumps(sensorData))
+        r = requests.post(self.url + '/sensors/update/', 0)# json.dumps(sensorData))

@@ -23,7 +23,7 @@ class BasestationNetwork:
 
 	def getSensorData(self):
 		try:
-			r = requests.get(self.url + '/getSensor/')
+			r = requests.get(self.url + '/sensors/get/')
 			return r.text
 		except (ConnectionRefusedError, ConnectionResetError, ConnectionError, requests.exceptions.ConnectionError) as err:
 			print("Error getting data from web server. Will retry in 2 seconds: " + time.ctime())
@@ -32,7 +32,7 @@ class BasestationNetwork:
 
 	def postClientData(self, controllerData):
 		try:
-			r = requests.post(self.url + '/update/' + json.dumps(controllerData) + '/')
+			r = requests.post(self.url + '/controller/update/' + json.dumps(controllerData) + '/')
 			time.sleep(.1)
 		except (ConnectionRefusedError, ConnectionResetError, ConnectionError, requests.exceptions.ConnectionError) as err:
 			print("Error sending data to web server. Will retry in 2 seconds: " + time.ctime())

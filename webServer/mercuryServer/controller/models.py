@@ -30,9 +30,9 @@ class ControllerInput(models.Model):
 
     def createDictionary(self):
         value = {
-        'a':self.a, 'b': self.b, 'x': self.x, 'y': self.y, 'start': self.st, 'select': self.se,
-        'r_trigger': self.rt, 'l_trigger': self.lt, 'r_bump': self.rb, 'l_bump': self.lb,
-        'r_stick_x': self.rsx, 'r_stick_y': self.rsy, 'l_stick_x': self.lsx, 'l_stick_y': self.lsy,
-        'up': self.u, 'down': self.d, 'left': self.l, 'right': self.r,
+        'a':self.a, 'b': self.b, 'x': self.x, 'y': self.y, 'st': self.st, 'se': self.se,
+        'rt': self.rt, 'lt': self.lt, 'rb': self.rb, 'lb': self.lb,
+        'rsx': self.rsx, 'rsy': self.rsy, 'lsx': self.lsx, 'lsy': self.lsy,
+        'u': self.u, 'd': self.d, 'l': self.l, 'r': self.r,
         }
         return value
