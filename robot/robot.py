@@ -7,6 +7,7 @@
 import logging
 from time import sleep, ctime
 from random import randint
+from threading import Thread
 from networking import RobotNetwork
 from components import *
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
@@ -88,9 +89,30 @@ class Robot:
         for s in self.sensorValues:
             self.sensorValues[s] = randint(0, 1000)
 
+    def sensorUpdateThreadMethod(self):
+        while True:
+            self.updateSensorValuesTEST()
+            self.network.updateSensorData(self.sensorValues)
+
+    def outputComponentThreadMethod(self):
+        while True:
+            self.controllerDataTuple = self.network.getControllerStatus()
+            self.controllerData = self.controllerDataTuple[0]
+            if(self.controllerDataTuple[1] == False):
+                self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
+                sleep(2)
+                continue #This goes back to the top of the while loop and forces us to get new controller values
+                        #We can do this because sending sensor data isn't as important as getting updated controller data.
+                        #Plus the network is down, so it wouldn't make sense to try and send data again.   
+            self.updateOutputComponentsTEST()
+
 if __name__ == '__main__':
     r = Robot()
-    r.mainLoop()
+    #r.mainLoop()
+    t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
+    t2 = Thread(target=r.sensorUpdateThreadMethod, name='SENSOR-THREAD')
+    t1.start()
+    t2.start()
     """GPIO.cleanup()
     m1 = MotorComponent('leftMotor', 'l_stick', 11, 18)
     m2 = MotorComponent('leftMotor', 'l_stick', 13, 15)
