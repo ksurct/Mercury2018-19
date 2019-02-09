@@ -10,7 +10,8 @@ import random
 """
 
 class SensorGUI(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master=None, sensorLock=None):
+        self.sensorLock = sensorLock
         tk.Frame.__init__(self, master)
         self.grid()
 
@@ -93,6 +94,11 @@ class SensorGUI(tk.Frame):
         }
         self.updateSensorValues(valueDict)
         self.after(1000, self.testUpdate)
+
+    def getSensorValues(self):
+        values = self.sensorLock.requestData()
+        self.updateSensorValues(values)
+        self.after(100, self.getSensorValues)
         
 
 if __name__ == '__main__':

@@ -1,12 +1,11 @@
-1. update Robot/networking.py line 33 to return Tuple with true, update line 36 to return default status and false. Remove sleep on line 36.
-2. In Robot/robot.py add a check to see if we get a valid connection, if not, sleep(2)
+1. update Robot/networking.py line 33 to return Tuple with true, update line 36 to return default status and false. Remove sleep on line 36. - DONE
+2. In Robot/robot.py add a check to see if we get a valid connection, if not, sleep(2) - DONE
 3. Check placeholder code on components.py, test thoroughly. Mainly motors and servos
 4. Check shellscript for LOS test
 5. Clean up test files
 	I think servo_web_test.py is our main guy. Leave this where it be
-6. List of all sensors that we will have, encoders and sensors
+6. List of all sensors that we will have, encoders and sensors - Using 4 quad encoders, 1 on each wheel, 4 distance sensors, 1 on each side, for now
 	Create object in webserver
 7. Get servo min/max values
 8. In basestation, implement getsensordata
-9. Create GUI, hook to basestation 
-
+9. Create GUI, hook to basestation - DONE
