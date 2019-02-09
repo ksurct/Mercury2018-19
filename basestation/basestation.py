@@ -80,7 +80,7 @@ class Basestation:
 
     def getDataTest(self):
         data = self.basestationNetwork.getSensorData()
-        print(data)
+        #print(data)
         return data
 
     def getControllerData(self):
