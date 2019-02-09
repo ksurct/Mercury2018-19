@@ -82,7 +82,7 @@ class Robot:
             self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
 
     def updateOutputComponentsTEST(self):
-        print("Controller Data: " + ctime())
+        print("Controller Data: " + ctime() + " A is " + self.controllerData['a'])
 
     def updateSensorValuesTEST(self):
         for s in self.sensorValues:
