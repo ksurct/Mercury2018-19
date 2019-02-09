@@ -83,7 +83,7 @@ class Robot:
             self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
 
     def updateOutputComponentsTEST(self):
-        print("Controller Data: " + ctime() + " A is " + self.controllerData['a'])
+        print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
 
     def updateSensorValuesTEST(self):
         for s in self.sensorValues:
@@ -108,11 +108,13 @@ class Robot:
 
 if __name__ == '__main__':
     r = Robot()
-    #r.mainLoop()
-    t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
+    r.mainLoop()
+
+    """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
     t2 = Thread(target=r.sensorUpdateThreadMethod, name='SENSOR-THREAD')
     t1.start()
-    t2.start()
+    t2.start()"""
+
     """GPIO.cleanup()
     m1 = MotorComponent('leftMotor', 'l_stick', 11, 18)
     m2 = MotorComponent('leftMotor', 'l_stick', 13, 15)
