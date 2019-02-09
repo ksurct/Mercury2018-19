@@ -4,9 +4,9 @@
 	The robot will also publish sensor data to the web service for the basestation. 
 	We will maybe have two separate Pis for camera and motors/servos etc. The camera Pi should have its own folder and code and such
 """
-import asyncio
 import logging
-from time import sleep
+from time import sleep, ctime
+from random import randint
 from networking import RobotNetwork
 from components import *
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
@@ -17,7 +17,6 @@ class Robot:
         self.controllerData = ''
         logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
         self.logger = logging.getLogger(__name__)
-        self.loop = asyncio.get_event_loop()
 
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
@@ -44,6 +43,11 @@ class Robot:
         ]
         self.sensorList = []
 
+        self.sensorValues = {
+            'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
+			'df': 0, 'db': 0, 'dl': 0, 'dr': 0
+        }
+
 		
 
     def mainLoop(self):
@@ -54,28 +58,35 @@ class Robot:
                 self.controllerData = self.controllerDataTuple[0]
                 if(self.controllerDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
-                    sleep(1)
+                    sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
-                            #Plus the network is down, so it wouldn't make sense to try and send data again.
-                
-                #print(self.controllerData) #Just used this to make sure everything worked, can uncomment if needed, but don't use during competition
-                #for c in self.outputComponentList:
-                    #c.doUpdate(self.controllerData[c.controllerInput])
+                            #Plus the network is down, so it wouldn't make sense to try and send data again.   
+                self.updateOutputComponentsTEST()
 
-                #Get sensor data and push to the web server
-                for s in self.sensorList:
-                    s.doUpdate()
-                ############################
-                # UNCOMMENT THE LINE BELOW ONCE WE KNOW WHAT SENSORS WE NEED AND SUCH
-                #self.network.updateSensorData(self.sensorList)
-                ############################
+                self.updateSensorValuesTEST()
+                self.network.updateSensorData(self.sensorValues)
+
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt detected. Exiting now.")
         finally:
             #ensure robot loop gets closed
-            self.loop.close()
             self.logger.info("Event loop closed. Exiting program")
+
+    def updateOutputComponents(self):
+        for c in self.outputComponentList:
+            c.doUpdate(self.controllerData[c.controllerInput])
+
+    def updateSensorValues(self):
+        for s in self.sensorValues:
+            self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
+
+    def updateOutputComponentsTEST(self):
+        print("Controller Data: " + ctime())
+
+    def updateSensorValuesTEST(self):
+        for s in self.sensorValues:
+            self.sensorValues[s] = randint(0, 1000)
 
 if __name__ == '__main__':
     r = Robot()

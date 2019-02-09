@@ -72,7 +72,7 @@ class SensorGUI(tk.Frame):
         self.lbl_dr.grid(column=2, row=1)
     
     def updateSensorValues(self, valueDict):
-        self.tv_db.set(self.t_db + str(valueDict['db']))
+        self.tv_db.set(self.t_db + str(valueDict["db"]))
         self.tv_df.set(self.t_df + str(valueDict['df']))
         self.tv_dl.set(self.t_dl + str(valueDict['dl']))
         self.tv_dr.set(self.t_dr + str(valueDict['dr']))

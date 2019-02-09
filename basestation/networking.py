@@ -24,7 +24,7 @@ class BasestationNetwork:
 	def getSensorData(self):
 		try:
 			r = requests.get(self.url + '/sensors/get/')
-			return r.text
+			return json.loads(r.text)
 		except (ConnectionRefusedError, ConnectionResetError, ConnectionError, requests.exceptions.ConnectionError) as err:
 			print("Error getting data from web server. Will retry in 2 seconds: " + time.ctime())
 			time.sleep(2)
