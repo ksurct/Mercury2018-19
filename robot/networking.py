@@ -48,4 +48,7 @@ class RobotNetwork:
     def updateSensorData(self, sensorData):
         #self.asyncSession.put(url, data=sensorData)
         #UPDATE SENSOR DICTIONARY ONCE WE KNOW WHAT SENSORS WE WANT
-        r = requests.post(self.url + '/sensors/update/' + json.dumps(sensorData) + '/')
+        try:
+            r = requests.post(self.url + '/sensors/update/' + json.dumps(sensorData) + '/')
+        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+            pass
