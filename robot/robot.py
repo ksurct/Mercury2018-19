@@ -22,15 +22,17 @@ class Robot:
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
         # We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
-        # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f  
+        # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f
+        
+        #We probably want to create separate lists for motors and servos since motors need the backwards part and servos don't
         self.outputComponentList = [
             # motors
 
             # TODO Uncomment this when these fields are programmed in Settings.py
-            # MotorComponent(MOTOR_ONE_NAME, MOTOR_ONE_CONTROLLER_INPUT, MOTOR_ONE_DIRECTION_PIN, MOTOR_ONE_PWM_PIN),
-            # MotorComponent(MOTOR_TWO_NAME, MOTOR_TWO_CONTROLLER_INPUT, MOTOR_TWO_DIRECTION_PIN, MOTOR_TWO_PWM_PIN),
-            # MotorComponent(MOTOR_THREE_NAME, MOTOR_THREE_CONTROLLER_INPUT, MOTOR_THREE_DIRECTION_PIN, MOTOR_THREE_PWM_PIN),
-            # MotorComponent(MOTOR_FOUR_NAME, MOTOR_FOUR_CONTROLLER_INPUT, MOTOR_FOUR_DIRECTION_PIN, MOTOR_FOUR_PWM_PIN),
+            MotorComponent(MOTOR_FR_NAME, MOTOR_FR_CONTROLLER_INPUT, MOTOR_FR_BACKWARD_INPUT, MOTOR_FR_DIRECTION_PIN, MOTOR_FR_PWM_PIN),
+            MotorComponent(MOTOR_FL_NAME, MOTOR_FL_CONTROLLER_INPUT, MOTOR_FL_BACKWARD_INPUT, MOTOR_FL_DIRECTION_PIN, MOTOR_FL_PWM_PIN),
+            MotorComponent(MOTOR_BR_NAME, MOTOR_BR_CONTROLLER_INPUT, MOTOR_BR_BACKWARD_INPUT, MOTOR_BR_DIRECTION_PIN, MOTOR_BR_PWM_PIN),
+            MotorComponent(MOTOR_BL_NAME, MOTOR_BL_CONTROLLER_INPUT, MOTOR_BL_BACKWARD_INPUT, MOTOR_BL_DIRECTION_PIN, MOTOR_BL_PWM_PIN)
 
             # servos
 
@@ -63,7 +65,7 @@ class Robot:
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
                             #Plus the network is down, so it wouldn't make sense to try and send data again.   
-                self.updateOutputComponentsTEST()
+                self.updateOutputComponents()
 
                 self.updateSensorValuesTEST()
                 self.network.updateSensorData(self.sensorValues)
@@ -76,7 +78,7 @@ class Robot:
 
     def updateOutputComponents(self):
         for c in self.outputComponentList:
-            c.doUpdate(self.controllerData[c.controllerInput])
+            c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
 
     def updateSensorValues(self):
         for s in self.sensorValues:

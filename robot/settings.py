@@ -1,10 +1,15 @@
 #Settings file for different components on the robot
 
+##############
+# IMPORTANT NOTE:
+# ALL pin settings are in board mode, which is the Pin# column (outer-most) on the Pi Header print-out
+##############
+
 ###################################
 #   Networking Settings
 ###################################
-WEB_SERVER_ADDRESS = "129.130.10.251" #Game Jam hookup
-# WEB_SERVER_ADDRESS = "10.135.79.80" #IP for Reece's apartment: "70.179.163.182"
+#WEB_SERVER_ADDRESS = "129.130.10.251" #Game Jam hookup
+WEB_SERVER_ADDRESS = "10.135.79.80" #IP for Reece's apartment: "70.179.163.182"
 WEB_SERVER_PORT = "8000"
 
 ###################################
@@ -17,25 +22,34 @@ WEB_SERVER_PORT = "8000"
 ###################################
 
 # Complete these fields when these motors are connected
-MOTOR_ONE_NAME = ""
-MOTOR_ONE_CONTROLLER_INPUT = ''
-MOTOR_ONE_DIRECTION_PIN = 0
-MOTOR_ONE_PWM_PIN = 0
 
-MOTOR_TWO_NAME = ""
-MOTOR_TWO_CONTROLLER_INPUT = ''
-MOTOR_TWO_DIRECTION_PIN = 0
-MOTOR_TWO_PWM_PIN = 0
+#Motor 1 on Front Motors Board
+MOTOR_FR_NAME = "front-right"
+MOTOR_FR_CONTROLLER_INPUT = 'rt'
+MOTOR_FR_BACKWARD_INPUT = 'rb'
+MOTOR_FR_DIRECTION_PIN = 31
+MOTOR_FR_PWM_PIN = 11
 
-MOTOR_THREE_NAME = ""
-MOTOR_THREE_CONTROLLER_INPUT = ''
-MOTOR_THREE_DIRECTION_PIN = 0
-MOTOR_THREE_PWM_PIN = 0
+#Motor 2 on Front Motors Board
+MOTOR_FL_NAME = "front-left"
+MOTOR_FL_CONTROLLER_INPUT = 'lt'
+MOTOR_FL_BACKWARD_INPUT = 'lb'
+MOTOR_FL_DIRECTION_PIN = 32
+MOTOR_FL_PWM_PIN = 27
 
-MOTOR_FOUR_NAME = ""
-MOTOR_FOUR_CONTROLLER_INPUT = ''
-MOTOR_FOUR_DIRECTION_PIN = 0
-MOTOR_FOUR_PWM_PIN = 0
+#Motor 2 on Back Motors Board
+MOTOR_BR_NAME = "back-right"
+MOTOR_BR_CONTROLLER_INPUT = 'rt'
+MOTOR_BR_BACKWARD_INPUT = 'rb'
+MOTOR_BR_DIRECTION_PIN = 33
+MOTOR_BR_PWM_PIN = 15
+
+#Motor 1 on Back Motors Board
+MOTOR_BL_NAME = "back-left"
+MOTOR_BL_CONTROLLER_INPUT = 'lt'
+MOTOR_BL_BACKWARD_INPUT = 'lb'
+MOTOR_BL_DIRECTION_PIN = 36
+MOTOR_BL_PWM_PIN = 16
 
 ###################################
 #   Servo Settings

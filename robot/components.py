@@ -2,7 +2,6 @@
     File that will hold the source code for hardware that will be controlled by the Pi.
     All of the servos, motors, sensors, LEDs, etc. will be here.
 """
-import asyncio
 import RPi.GPIO as GPIO
 import Adafruit_PCA9685
 
@@ -26,17 +25,18 @@ class SensorComponent(Component):
         #Don't know if we will use anything here
         pass
 
-    async def getSensorValues(self):
+    def getSensorValues(self):
         #Get sensor values from robot asynchronously and return them in some data type
         pass
 
-    async def doUpdate(self, value):
+    def doUpdate(self, value):
         return self.getSensorValues()
 
-class MotorComponent(Component):
-    def __init__(self, name, controllerInput, directionPin, pwmPin):
+class MotorComponent():
+    def __init__(self, name, controllerInput, backwardInput, directionPin, pwmPin):
         self.name = name
         self.controllerInput = controllerInput
+        self.backwardInput = backwardInput
         self.directionPin = directionPin
         self.pwmPin = pwmPin
         self.motorPower = 0
@@ -75,11 +75,14 @@ class MotorComponent(Component):
         self.PWM.ChangeDutyCycle(pwm)
         pass
 
-    def doUpdate(self, value):
+    def doUpdate(self, value, doBackwards):
         #This is the method we will call from the main loop when parsing controller data
-        if (self.name == 'leftMotor'):
+        value *= (100/8191.0) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
+        if (doBackwards == 1):
+            value *= -1
+        if ('left' in self.name):
             self.updateSpeed(-1 * value)
-        elif (self.name == 'rightMotor'):
+        elif ('right' in self.name):
             self.updateSpeed(value)
         else:
             pass
