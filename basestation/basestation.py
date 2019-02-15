@@ -90,8 +90,8 @@ class Basestation:
         self.controllerData['y'] = 1 if self.controller.y() else 0
         self.controllerData['st'] = 1 if self.controller.select_button() else 0 #this is switched in xbox file
         self.controllerData['se'] = 1 if self.controller.start_button() else 0
-        self.controllerData['rt'] = int(self.controller.right_trigger() >> 3)
-        self.controllerData['lt'] = int(self.controller.left_trigger() >> 3) 
+        self.controllerData['rt'] = int(self.controller.right_trigger() >> 3) + 4096 #adding 4096 starts the trigger at 0
+        self.controllerData['lt'] = int(self.controller.left_trigger() >> 3) + 4096 #adding 4096 starts the trigger at 0
         self.controllerData['rb'] = 1 if self.controller.right_bumper() else 0
         self.controllerData['lb'] = 1 if self.controller.left_bumper() else 0
         r_stick_x = round(self.controller.right_x(), 1)
