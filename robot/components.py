@@ -34,6 +34,7 @@ class SensorComponent(Component):
 
 class MotorComponent():
     def __init__(self, name, controllerInput, backwardInput, directionPin, pwmPin):
+        GPIO.setmode(GPIO.BOARD)
         self.name = name
         self.controllerInput = controllerInput
         self.backwardInput = backwardInput
@@ -42,6 +43,7 @@ class MotorComponent():
         self.motorPower = 0
 
         GPIO.setup(self.directionPin, GPIO.OUT)
+        print(self.pwmPin)
         GPIO.setup(self.pwmPin, GPIO.OUT)
         GPIO.output(self.directionPin, False)
 
@@ -51,7 +53,7 @@ class MotorComponent():
 
     def __del__(self):
         #Make sure robot stops moving
-        self.updateSpeed(0)
+        #self.updateSpeed(0)
         pass
 
     def updateSpeed(self, value):
@@ -77,7 +79,7 @@ class MotorComponent():
 
     def doUpdate(self, value, doBackwards):
         #This is the method we will call from the main loop when parsing controller data
-        value *= (100/8191.0) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
+        value *= (100/8191) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
         if (doBackwards == 1):
             value *= -1
         if ('left' in self.name):

@@ -11,6 +11,7 @@ from threading import Thread
 from networking import RobotNetwork
 from components import *
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
+import RPi.GPIO as GPIO
 
 class Robot:
     def __init__(self):
@@ -76,6 +77,7 @@ class Robot:
         finally:
             #ensure robot loop gets closed
             self.logger.info("Event loop closed. Exiting program")
+            GPIO.cleanup()
 
     def updateOutputComponents(self):
         for c in self.outputComponentList:
@@ -113,8 +115,12 @@ class Robot:
             self.updateOutputComponentsTEST()
 
 if __name__ == '__main__':
-    r = Robot()
-    r.mainLoop()
+    try:
+        r = Robot()
+        r.mainLoop()
+    except:
+        print("ERROR")
+        GPIO.cleanup()
 
     """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
     t2 = Thread(target=r.sensorUpdateThreadMethod, name='SENSOR-THREAD')
