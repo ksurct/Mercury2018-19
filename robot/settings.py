@@ -63,6 +63,10 @@ SERVO_ONE_HOME = 0
 SERVO_ONE_MIN = 0
 SERVO_ONE_MAX = 255
 
+SERVO_L_NAME = "Launcher"
+SERVO_L_CONTROLLER_INPUT = 'st'
+SERVO_L_CHANNEL = 0
+
 ###################################
 #   LED Settings
 ###################################

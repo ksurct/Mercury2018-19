@@ -115,6 +115,27 @@ class ServoComponent(Component):
         #Method called from main loop when parsing data
         return self.updatePosition(value)
 
+class LauncherServoComponent(Component):
+    def __init__(self, name, channel, controllerInput):
+        self.pwm = Adafruit_PCA9685.PCA9685()
+        self.name = name
+        self.channel = channel
+        self.controllerInput = controllerInput
+
+    def __del__(self):
+        pass
+
+    def updatePosition(self, value):
+        if (value == 0): #MAKE THIS WHERE IT STOPS MOVING
+            pass
+        else: #MAKE THIS WHERE IT IS MOVING
+            pass
+        return True
+
+    def doUpdate(self, value):
+        return self.updatePosition(value)
+
+
 class LEDComponent(Component):
     def __init__(self, name, controllerInput):
         self.name = name

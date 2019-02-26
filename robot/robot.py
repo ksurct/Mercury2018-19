@@ -32,12 +32,13 @@ class Robot:
             MotorComponent(MOTOR_FR_NAME, MOTOR_FR_CONTROLLER_INPUT, MOTOR_FR_BACKWARD_INPUT, MOTOR_FR_DIRECTION_PIN, MOTOR_FR_PWM_PIN),
             MotorComponent(MOTOR_FL_NAME, MOTOR_FL_CONTROLLER_INPUT, MOTOR_FL_BACKWARD_INPUT, MOTOR_FL_DIRECTION_PIN, MOTOR_FL_PWM_PIN),
             MotorComponent(MOTOR_BR_NAME, MOTOR_BR_CONTROLLER_INPUT, MOTOR_BR_BACKWARD_INPUT, MOTOR_BR_DIRECTION_PIN, MOTOR_BR_PWM_PIN),
-            MotorComponent(MOTOR_BL_NAME, MOTOR_BL_CONTROLLER_INPUT, MOTOR_BL_BACKWARD_INPUT, MOTOR_BL_DIRECTION_PIN, MOTOR_BL_PWM_PIN)
+            MotorComponent(MOTOR_BL_NAME, MOTOR_BL_CONTROLLER_INPUT, MOTOR_BL_BACKWARD_INPUT, MOTOR_BL_DIRECTION_PIN, MOTOR_BL_PWM_PIN),
 
             # servos
 
-            # TODO uncomment htis when these fields are programmed in settings.py
+            # TODO uncomment this when these fields are programmed in settings.py
             # ServoComponent(SERVO_ONE_NAME, SERVO_ONE_CONTROLLER_INPUT, SERVO_ONE_CHANNEL, SERVO_ONE_HOME, SERVO_ONE_MIN, SERVO_ONE_MAX)
+            LauncherServoComponent(SERVO_L_NAME, SERVO_L_CHANNEL, SERVO_L_CONTROLLER_INPUT)
 
             # leds
 
@@ -78,7 +79,10 @@ class Robot:
 
     def updateOutputComponents(self):
         for c in self.outputComponentList:
-            c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
+            if c is MotorComponent:
+                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
+            else:
+                c.doUpdate(self.controllerData[c.controllerInput])
 
     def updateSensorValues(self):
         for s in self.sensorValues:
