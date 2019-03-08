@@ -7,6 +7,23 @@ pwm = Adafruit_PCA9685.PCA9685()
 # Alternatively specify a different address and/or bus:
 #pwm = Adafruit_PCA9685.PCA9685(address=0x41, busnum=2)
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~ Use these settings for launcher
+# Power supply set to 7.4V and 2A
+# Remember to press the blue output button on the power supply
+
+#These make it go backwards
+input('Press enter to start the launcher')
+pwm.set_pwm_freq(333)
+pwm.set_pwm(0, 0, 3400)
+#input('press to end')
+
+#Stop test
+input('Press enter to stop')
+pwm.set_pwm_freq(333)
+pwm.set_pwm(0, 0, 1800)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 #pwm.set_pwm_freq(500)
 
 
@@ -30,6 +47,7 @@ pwm.set_all_pwm(0, 0)    """
 #pwm.set_pwm_freq(1000) # this made it go with
 #pwm.set_pwm(0, 0, 2000)
 
+'''
 # forwards
 print('forwards')
 pwm.set_pwm_freq(500) # this also made it go
@@ -55,7 +73,7 @@ pwm.set_pwm(0, 0, 3400)
 input('stop')
 pwm.set_pwm_freq(333)
 pwm.set_pwm(0, 0, 1800)
-
+'''
 '''
 print('Running Experiemnt')
 pwm.set_pwm_freq(333)
