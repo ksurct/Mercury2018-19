@@ -13,7 +13,7 @@ from components import *
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
 import RPi.GPIO as GPIO
 
-class Robot:
+class Robot_Motors:
     def __init__(self):
         self.network = RobotNetwork(WEB_SERVER_ADDRESS + ":" + WEB_SERVER_PORT)
         self.controllerData = ''
@@ -46,13 +46,6 @@ class Robot:
             # TODO uncomment htis when these fields are programmed in settings.py
             #LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT)
         ]
-        self.sensorList = []
-
-        self.sensorValues = {
-            'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
-			'df': 0, 'db': 0, 'dl': 0, 'dr': 0
-        }
-
 		
 
     def mainLoop(self):
@@ -69,9 +62,6 @@ class Robot:
                             #Plus the network is down, so it wouldn't make sense to try and send data again.   
                 self.updateOutputComponents()
 
-                self.updateSensorValuesTEST()
-                self.network.updateSensorData(self.sensorValues)
-
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt detected. Exiting now.")
         finally:
@@ -86,21 +76,8 @@ class Robot:
             else:
                 c.doUpdate(self.controllerData[c.controllerInput])
 
-    def updateSensorValues(self):
-        for s in self.sensorValues:
-            self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
-
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
-
-    def updateSensorValuesTEST(self):
-        for s in self.sensorValues:
-            self.sensorValues[s] = randint(0, 1000)
-
-    def sensorUpdateThreadMethod(self):
-        while True:
-            self.updateSensorValuesTEST()
-            self.network.updateSensorData(self.sensorValues)
 
     def outputComponentThreadMethod(self):
         while True:
@@ -116,7 +93,7 @@ class Robot:
 
 if __name__ == '__main__':
     try:
-        r = Robot()
+        r = Robot_Motors()
         r.mainLoop()
     except:
         print("ERROR")
