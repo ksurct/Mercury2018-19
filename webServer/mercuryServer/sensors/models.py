@@ -7,20 +7,21 @@ class SensorData(models.Model):
     qfr = models.IntegerField(default = 0)
     qbl = models.IntegerField(default = 0)
     qbr = models.IntegerField(default = 0)
-    df = models.IntegerField(default = 0)
-    db = models.IntegerField(default = 0)
-    dl = models.IntegerField(default = 0)
-    dr = models.IntegerField(default = 0)
+    dfl = models.IntegerField(default = 0)
+    dfr = models.IntegerField(default = 0)
+    dsl = models.IntegerField(default = 0)
+    dsr = models.IntegerField(default = 0)
+    da = models.IntegerField(default = 0)
 
     def __str__(self):
         val = "qfl: {} | qfr: {} | qbl: {} | qbr: {}\n".format(self.qfl, self.qfr, self.qbl, self.qbr)
-        val += "df: {} | db: {} | dl: {} | dr: {}\n".format(self.df, self.db, self.dl, self.dr)
+        val += "dfl: {} | dfr: {} | dsl: {} | dsr: {} | da: {}\n".format(self.dfl, self.dfr, self.dsl, self.dsr, self.da)
         return val
 
     def createDictionary(self):
         val = {
             'qfl': self.qfl, 'qfr': self.qfr, 'qbl': self.qbl, 'qbr': self.qbr,
-            'df': self.df, 'db': self.db, 'dl': self.dl, 'dr': self.dr
+            'dfl': self.dfl, 'dfr': self.dfr, 'dsl': self.dsl, 'dsr': self.dsr, 'da': self.da
         }
         return val
 

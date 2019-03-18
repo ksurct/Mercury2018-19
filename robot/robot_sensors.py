@@ -31,7 +31,7 @@ class Robot_Sensors:
 
         self.sensorValues = {
             'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
-			'df': 0, 'db': 0, 'dl': 0, 'dr': 0
+			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0, 'da': 0
         }
 
 		
