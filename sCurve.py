@@ -1,4 +1,5 @@
 from time import sleep
+
 def runServo(channel, on, pwm1, start, relativeAngle, upperbound=4095, delayTime=0.08):
     for i in range(-14, 14):
         value = start + (1/(1+2.7**(-i/2 * (1/2)))) * ((relativeAngle/270) * upperbound)

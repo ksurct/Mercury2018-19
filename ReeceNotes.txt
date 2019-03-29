@@ -1,23 +1,22 @@
-1. update Robot/networking.py line 33 to return Tuple with true, update line 36 to return default status and false. Remove sleep on line 36. - DONE
-2. In Robot/robot.py add a check to see if we get a valid connection, if not, sleep(2) - DONE
-3. Check placeholder code on components.py, test thoroughly. Mainly motors and servos
-4. Check shellscript for LOS test
-5. Clean up test files
-	I think servo_web_test.py is our main guy. Leave this where it be
-6. List of all sensors that we will have, encoders and sensors - Using 4 quad encoders, 1 on each wheel, 4 distance sensors, 1 on each side, for now
-	Create object in webserver - DONE
-7. Get servo min/max values
-8. In basestation, implement getsensordata - DONE
-9. Create GUI, hook to basestation - DONE
-
 From above list:
 3. Check placeholder code on components.py, test thoroughly. Mainly motors and servos
-4. Check shellscript for LOS test
-5. Clean up test files
-	I think servo_web_test.py is our main guy. Leave this where it be
 7. Get servo min/max values
 
 
-Set up method to give random sensor values on robot to test web server
-Test that we can pass messages (controller and sensor) back and forth between basestation and robot
-Possibly put sensor stuff in separate thread of robot, maybe, idk
+INFO FOR UPDATED SERVO MOVEMENT WITH S-CURVE 
+
+In settings.py
+	Have dictionary of servo presets corresponding servo position and controller input
+
+In robot_motors.py
+	Pass the dictionaries from settings to the corresponding servo objects
+
+In components.py in the ServoComponent object:
+	Check which servo we are working with based on self.name
+	Check which of the buttons are pressed, if any
+	For a button that is pressed:
+		if the servo is currently at the position corresponding to the value in the presets dictionary, pass and don't update position
+		if it's going straight up to the launcher, bypass sCurve
+		else use sCurve to go to the predetermined position in the presets dictionary (ideally in a new Thread)
+			We need to know the preset value and the current position to find the relative angle
+	Update the current position of the servo

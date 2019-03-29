@@ -4,6 +4,7 @@
 """
 import RPi.GPIO as GPIO
 import Adafruit_PCA9685
+from time import sleep
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -90,32 +91,54 @@ class MotorComponent():
             pass
 
 class ServoComponent(Component):
-    def __init__(self, name, controllerInput, channel, homePosition, minValue, maxValue):
+    def __init__(self, name, controllerInput, channel, presetDict):
         self.pwm = Adafruit_PCA9685.PCA9685()
         self.pwm.set_pwm_freq(60)
         self.name = name
         self.controllerInput = controllerInput
         self.channel = channel
-        self.homePosition = homePosition
-        self.minValue = minValue
-        self.maxValue = maxValue
+        self.presetDictionary = presetDict
+        self.currentPosition = 0
 
     def __del__(self):
         #Make servo return to some predefined "home" position
-        self.updatePosition(self.homePosition)
+        self.updatePosition(self.presetDictionary['home'])
         pass
 
-    def updatePosition(self, value):
+    def updatePosition(self, valueDict):
         #Update servo position
-        if (value >= self.minValue and value <= self.maxValue):
-            self.pwm.set_pwm(self.channel, 0, value)
-            return True
-        else:
-            return False
+        if (self.name == 'picky-uppy'):
+            if (valueDict['up'] == 1):
+                #Drop ball in launcher, bypass sCurve
+                self.pwm.set_pwm(self.channel, 0, self.presetDictionary['up'])
+                self.currentPosition = self.presetDictionary['up']
+            elif (valueDict['down'] == 1):
+                #All the way down
+                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle using presetDictionary
+                self.currentPosition = self.currentPosition + 120
+            elif (valueDict['left'] == 1):
+                #All the way down
+                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle
+                self.currentPosition = self.currentPosition + 120
+            elif (valueDict['right'] == 1):
+                #All the way down
+                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle
+                self.currentPosition = self.currentPosition + 120
+        elif (self.name == 'camera'):
+            #TODO Figure out how to get relative angle based on currentPosition and the presetDictionary and do the same idea as picky-uppy
+            pass
+
     
     def doUpdate(self, value):
         #Method called from main loop when parsing data
         return self.updatePosition(value)
+
+    def sCurve(self, on, start, relativeAngle, upperbound=4095, delayTime=0.08):
+        for i in range(-14, 14):
+            value = start + (1/(1+2.7**(-i/2 * (1/2)))) * ((relativeAngle/270) * upperbound)
+            print("degree: {} to {}, value: {}".format(round((start/upperbound) * 270, 2), round(value/upperbound * 270, 2), round(value, 2)) )
+            sleep(delayTime + abs(i**2 / 10000))
+            self.pwm.set_pwm(self.channel,on,int(value + 0.5))
 
 class LauncherServoComponent(Component):
     def __init__(self, name, channel, controllerInput):
