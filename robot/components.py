@@ -5,6 +5,7 @@
 import RPi.GPIO as GPIO
 import Adafruit_PCA9685
 from time import sleep
+from threading import Thread
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -54,7 +55,7 @@ class MotorComponent():
 
     def __del__(self):
         #Make sure robot stops moving
-        #self.updateSpeed(0)
+        self.updateSpeed(0)
         pass
 
     def updateSpeed(self, value):
@@ -91,47 +92,64 @@ class MotorComponent():
             pass
 
 class ServoComponent(Component):
-    def __init__(self, name, controllerInput, channel, presetDict):
+    def __init__(self, name, channel, presetDict, minVal, maxVal):
         self.pwm = Adafruit_PCA9685.PCA9685()
         self.pwm.set_pwm_freq(60)
         self.name = name
-        self.controllerInput = controllerInput
         self.channel = channel
         self.presetDictionary = presetDict
         self.currentPosition = 0
+        self.sCurveThread = Thread()
+        self.min = minVal
+        self.max = maxVal
 
     def __del__(self):
         #Make servo return to some predefined "home" position
         self.updatePosition(self.presetDictionary['home'])
         pass
 
-    def updatePosition(self, valueDict):
+    def updatePosition(self, valueArr):
         #Update servo position
+        """
+            Format for valueArr:
+            ['up', 'down', 'left', 'right', 'lStickY']
+        """
         if (self.name == 'picky-uppy'):
-            if (valueDict['up'] == 1):
+            #TODO Change 120s in sCurve thread once we figure out relative angle stuff with servo
+            if (valueArr[0] == 1):
                 #Drop ball in launcher, bypass sCurve
                 self.pwm.set_pwm(self.channel, 0, self.presetDictionary['up'])
                 self.currentPosition = self.presetDictionary['up']
-            elif (valueDict['down'] == 1):
+            elif (valueArr[1] == 1):
                 #All the way down
-                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle using presetDictionary
+                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
+                self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
-            elif (valueDict['left'] == 1):
+            elif (valueArr[2] == 1):
                 #All the way down
-                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle
+                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
+                self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
-            elif (valueDict['right'] == 1):
+            elif (valueArr[3] == 1):
                 #All the way down
-                self.sCurve(0, self.currentPosition, 120) #TODO Change 120 degrees to an actual relative angle
+                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
+                self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
+            elif (valueArr[4] != 0):
+                self.pwm.set_pwm(self.channel, 0, self.currentPosition + valueArr[4])
+                self.currentPosition = self.currentPosition + valueArr[4]
         elif (self.name == 'camera'):
             #TODO Figure out how to get relative angle based on currentPosition and the presetDictionary and do the same idea as picky-uppy
             pass
 
     
-    def doUpdate(self, value):
+    def doUpdate(self, valueArr):
         #Method called from main loop when parsing data
-        return self.updatePosition(value)
+        """
+            Format for valueArr:
+            ['up', 'down', 'left', 'right', 'lStickY']
+        """
+        return self.updatePosition(valueArr)
 
     def sCurve(self, on, start, relativeAngle, upperbound=4095, delayTime=0.08):
         for i in range(-14, 14):

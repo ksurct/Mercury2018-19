@@ -20,6 +20,8 @@ class Robot_Motors:
         logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
+        self.servoArr = [0, 0, 0, 0, 0]
+
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
         # We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
@@ -39,7 +41,9 @@ class Robot_Motors:
 
             # TODO uncomment this when these fields are programmed in settings.py
             # ServoComponent(SERVO_ONE_NAME, SERVO_ONE_CONTROLLER_INPUT, SERVO_ONE_CHANNEL, SERVO_ONE_HOME, SERVO_ONE_MIN, SERVO_ONE_MAX)
-            LauncherServoComponent(SERVO_L_NAME, SERVO_L_CHANNEL, SERVO_L_CONTROLLER_INPUT)
+            LauncherServoComponent(SERVO_L_NAME, SERVO_L_CHANNEL, SERVO_L_CONTROLLER_INPUT),
+            ServoComponent(SERVO_PU_NAME, SERVO_PU_CHANNEL, SERVO_PU_PRESET_DICT, SERVO_PU_MIN, SERVO_PU_MAX),
+            ServoComponent(SERVO_CAM_NAME, SERVO_CAM_CHANNEL, SERVO_CAM_PRESET_DICT, SERVO_CAM_MIN, SERVO_CAM_MAX)
 
             # leds
 
@@ -59,7 +63,8 @@ class Robot_Motors:
                     sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
-                            #Plus the network is down, so it wouldn't make sense to try and send data again.   
+                            #Plus the network is down, so it wouldn't make sense to try and send data again. 
+                self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 self.updateOutputComponents()
 
         except KeyboardInterrupt:
@@ -73,7 +78,9 @@ class Robot_Motors:
         for c in self.outputComponentList:
             if c is MotorComponent:
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
-            else:
+            elif c is ServoComponent:
+                c.doUpdate(self.servoArr)
+            elif c is LauncherServoComponent:
                 c.doUpdate(self.controllerData[c.controllerInput])
 
     def updateOutputComponentsTEST(self):
