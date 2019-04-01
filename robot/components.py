@@ -98,10 +98,12 @@ class ServoComponent(Component):
         self.name = name
         self.channel = channel
         self.presetDictionary = presetDict
-        self.currentPosition = 0
+        self.currentPosition = 182
         self.sCurveThread = Thread()
         self.min = minVal
         self.max = maxVal
+
+        self.pwm.set_pwm(self.channel, 0, self.currentPosition)
 
     def __del__(self):
         #Make servo return to some predefined "home" position
@@ -136,8 +138,14 @@ class ServoComponent(Component):
                 self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
             elif (valueArr[4] != 0):
-                self.pwm.set_pwm(self.channel, 0, self.currentPosition + valueArr[4])
-                self.currentPosition = self.currentPosition + valueArr[4]
+                if (self.currentPosition + valueArr > self.max):
+                    self.currentPosition = self.max
+                elif (self.currentPosition + valueArr < self.min):
+                    self.currentPosition = self.min
+                else:
+                    self.currentPosition = self.currentPosition + valueArr[4]
+                self.pwm.set_pwm(self.channel, 0, self.currentPosition)
+                
         elif (self.name == 'camera'):
             #TODO Figure out how to get relative angle based on currentPosition and the presetDictionary and do the same idea as picky-uppy
             pass
@@ -164,15 +172,18 @@ class LauncherServoComponent(Component):
         self.name = name
         self.channel = channel
         self.controllerInput = controllerInput
+        self.pwm.set_pwm_freq(333)
+        self.pwm.set_pwm(self.channel, 0, 1800)
 
     def __del__(self):
-        pass
+        self.pwm.set_pwm(self.channel, 0, 1800)
 
     def updatePosition(self, value):
         if (value == 0): #MAKE THIS WHERE IT STOPS MOVING
-            pass
+            self.pwm.set_pwm(self.channel, 0, 1800)
         else: #MAKE THIS WHERE IT IS MOVING
-            pass
+            self.pwm.set_pwm(self.channel, 0, 3400)
+            sleep(1)
         return True
 
     def doUpdate(self, value):
