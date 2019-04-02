@@ -64,12 +64,12 @@ class Robot_Motors:
                 self.controllerDataTuple = self.network.getControllerStatus()
                 self.controllerData = self.controllerDataTuple[0]
                 #print(self.controllerData)
-                """if(self.controllerDataTuple[1] == False):
+                if(self.controllerDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
-                            #Plus the network is down, so it wouldn't make sense to try and send data again. """
+                            #Plus the network is down, so it wouldn't make sense to try and send data again. 
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 self.updateOutputComponents()
 
@@ -89,6 +89,7 @@ class Robot_Motors:
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
+                print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
                 c.doUpdate(self.controllerData[c.controllerInput])
         #print("Done with updateOutput")
 
