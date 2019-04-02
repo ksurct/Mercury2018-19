@@ -45,7 +45,6 @@ class MotorComponent():
         self.motorPower = 0
 
         GPIO.setup(self.directionPin, GPIO.OUT)
-        print(self.pwmPin)
         GPIO.setup(self.pwmPin, GPIO.OUT)
         GPIO.output(self.directionPin, False)
 
@@ -56,19 +55,18 @@ class MotorComponent():
     def __del__(self):
         #Make sure robot stops moving
         self.updateSpeed(0)
-        pass
 
     def updateSpeed(self, value):
         #Update motor speed
         if (value < 0):
             #Motor going in reverse
-            GPIO.output(self.directionPin, False)
+            GPIO.output(self.directionPin, True)
             pwm = -int(value)
             if (pwm > 100):
                 pwm = 100
         elif (value > 0):
             #Motor going forwards
-            GPIO.output(self.directionPin, True)
+            GPIO.output(self.directionPin, False)
             pwm = int(value)
             if (pwm > 100):
                 pwm = 100
@@ -77,7 +75,6 @@ class MotorComponent():
             pwm = 0
         self.motorPower = pwm
         self.PWM.ChangeDutyCycle(pwm)
-        pass
 
     def doUpdate(self, value, doBackwards):
         #This is the method we will call from the main loop when parsing controller data
@@ -89,12 +86,12 @@ class MotorComponent():
         elif ('right' in self.name):
             self.updateSpeed(value)
         else:
-            pass
+            print("Not updating the motor")
 
 class ServoComponent(Component):
     def __init__(self, name, channel, presetDict, minVal, maxVal):
         self.pwm = Adafruit_PCA9685.PCA9685()
-        self.pwm.set_pwm_freq(60)
+        self.pwm.set_pwm_freq(40)
         self.name = name
         self.channel = channel
         self.presetDictionary = presetDict
@@ -120,8 +117,8 @@ class ServoComponent(Component):
             #TODO Change 120s in sCurve thread once we figure out relative angle stuff with servo
             if (valueArr[0] == 1):
                 #Drop ball in launcher, bypass sCurve
-                self.pwm.set_pwm(self.channel, 0, self.presetDictionary['up'])
-                self.currentPosition = self.presetDictionary['up']
+                self.pwm.set_pwm(self.channel, 0, self.presetDictionary['deposit'])
+                self.currentPosition = self.presetDictionary['deposit']
             elif (valueArr[1] == 1):
                 #All the way down
                 self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
@@ -138,13 +135,14 @@ class ServoComponent(Component):
                 self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
             elif (valueArr[4] != 0):
-                if (self.currentPosition + valueArr > self.max):
+                if (self.currentPosition + valueArr[4] > self.max):
                     self.currentPosition = self.max
-                elif (self.currentPosition + valueArr < self.min):
+                elif (self.currentPosition + valueArr[4] < self.min):
                     self.currentPosition = self.min
                 else:
                     self.currentPosition = self.currentPosition + valueArr[4]
                 self.pwm.set_pwm(self.channel, 0, self.currentPosition)
+            #print(self.currentPosition)
                 
         elif (self.name == 'camera'):
             #TODO Figure out how to get relative angle based on currentPosition and the presetDictionary and do the same idea as picky-uppy
@@ -182,6 +180,7 @@ class LauncherServoComponent(Component):
         if (value == 0): #MAKE THIS WHERE IT STOPS MOVING
             self.pwm.set_pwm(self.channel, 0, 1800)
         else: #MAKE THIS WHERE IT IS MOVING
+            print("UPDATE LAUNCHER")
             self.pwm.set_pwm(self.channel, 0, 3400)
             sleep(1)
         return True

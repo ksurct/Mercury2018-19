@@ -28,6 +28,7 @@ class Robot_Motors:
         # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f
         
         #We probably want to create separate lists for motors and servos since motors need the backwards part and servos don't
+        GPIO.cleanup()
         self.outputComponentList = [
             # motors
 
@@ -50,20 +51,25 @@ class Robot_Motors:
             # TODO uncomment htis when these fields are programmed in settings.py
             #LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT)
         ]
+        print(self.outputComponentList)
 		
-
+    def __del__(self):
+        GPIO.cleanup()
+        
     def mainLoop(self):
         try:
+            print("Right before while true")
             while True:
                 #Get controller data and update motors, servos, LEDs
                 self.controllerDataTuple = self.network.getControllerStatus()
                 self.controllerData = self.controllerDataTuple[0]
-                if(self.controllerDataTuple[1] == False):
+                #print(self.controllerData)
+                """if(self.controllerDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
-                            #Plus the network is down, so it wouldn't make sense to try and send data again. 
+                            #Plus the network is down, so it wouldn't make sense to try and send data again. """
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 self.updateOutputComponents()
 
@@ -76,12 +82,15 @@ class Robot_Motors:
 
     def updateOutputComponents(self):
         for c in self.outputComponentList:
-            if c is MotorComponent:
+            #print(c)
+            if isinstance(c, MotorComponent):
+                #print(self.controllerData[c.controllerInput])
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
-            elif c is ServoComponent:
+            elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
-            elif c is LauncherServoComponent:
+            elif isinstance(c, LauncherServoComponent):
                 c.doUpdate(self.controllerData[c.controllerInput])
+        #print("Done with updateOutput")
 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
@@ -101,9 +110,10 @@ class Robot_Motors:
 if __name__ == '__main__':
     try:
         r = Robot_Motors()
+        print("Going into mainLoop")
         r.mainLoop()
-    except:
-        print("ERROR")
+    except Exception as e:
+        print("ERROR {}".format(e))
         GPIO.cleanup()
 
     """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
