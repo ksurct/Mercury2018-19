@@ -136,6 +136,7 @@ class ServoComponent(Component):
                 self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
                 self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
+                # I just wanted something else to commit
             elif (valueArr[2] == 1):
                 #All the way down
                 self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
