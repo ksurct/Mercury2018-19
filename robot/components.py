@@ -99,6 +99,8 @@ class ServoComponent(Component):
         self.sCurveThread = Thread()
         self.min = minVal
         self.max = maxVal
+        self.currentAngle = self.calcAngleFromPosition(self.currentPosition) # Set the initial angle
+
 
         self.pwm.set_pwm(self.channel, 0, self.currentPosition)
 
@@ -107,12 +109,20 @@ class ServoComponent(Component):
         self.updatePosition(self.presetDictionary['home'])
         pass
 
+    def calcAngleFromPosition(self, position):
+        # calculates current angle based on max, min and current location
+        return (position - self.min)/(self.max - self.min)*90
+
     def updatePosition(self, valueArr):
         #Update servo position
         """
             Format for valueArr:
             ['up', 'down', 'left', 'right', 'lStickY']
         """
+
+        # Calculate the current angle
+        self.currentAngle = self.calcAngleFromPosition(self.currentPosition)
+
         #self.pwm.set_pwm_freq(40)
         if (self.name == 'picky-uppy'):
             #TODO Change 120s in sCurve thread once we figure out relative angle stuff with servo
