@@ -79,7 +79,7 @@ class Robot_Motors:
             #ensure robot loop gets closed
             self.logger.info("Event loop closed. Exiting program")
             GPIO.cleanup()
-
+    
     def updateOutputComponents(self):
         for c in self.outputComponentList:
             #print(c)
@@ -91,8 +91,7 @@ class Robot_Motors:
             elif isinstance(c, LauncherServoComponent):
                 print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
                 c.doUpdate(self.controllerData[c.controllerInput])
-        #print("Done with updateOutput")
-
+                
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
 

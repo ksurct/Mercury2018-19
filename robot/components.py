@@ -127,7 +127,6 @@ class ServoComponent(Component):
         if (self.name == 'picky-uppy'):
             #TODO Change 120s in sCurve thread once we figure out relative angle stuff with servo
             if (valueArr[0] == 1):
-                self.pwm.set_pwm_freq(40)
                 #Drop ball in launcher, bypass sCurve
                 self.pwm.set_pwm(self.channel, 0, self.presetDictionary['deposit'])
                 self.currentPosition = self.presetDictionary['deposit']
@@ -148,7 +147,6 @@ class ServoComponent(Component):
                 self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
             elif (valueArr[4] != 0):
-                self.pwm.set_pwm_freq(40)
                 if (self.currentPosition + valueArr[4] > self.max):
                     self.currentPosition = self.max
                 elif (self.currentPosition + valueArr[4] < self.min):
@@ -184,42 +182,40 @@ class LauncherServoComponent(Component):
         self.name = name
         self.channel = channel
         self.controllerInput = controllerInput
-        self.pwm.set_pwm_freq(333)
-        self.pwm.set_pwm(self.channel, 0, 1800)
+        self.pwm.set_pwm_freq(40)
+        self.pwm.set_pwm(self.channel, 0, 210)
         self.on = False
         self.moveThread = Thread()
 
     def __del__(self):
-        self.pwm.set_pwm_freq(333)
-        self.pwm.set_pwm(self.channel, 0, 1800)
+        self.pwm.set_pwm(self.channel, 0, 210)
 
     def updatePosition(self, value):
+        #self.pwm.set_pwm_freq(333)
         if (value == 0 and self.on == True): #MAKE THIS WHERE IT STOPS MOVING
             self.moveThread = Thread(target=self.turnOffThread)
             #self.moveThread.start()
-            self.pwm.set_pwm_freq(333)
-            self.pwm.set_pwm(self.channel, 0, 1800)
-            sleep(.25)
+            self.pwm.set_pwm(self.channel, 0, 210)
+            sleep(.1)
             self.on = False
         elif (value == 1): #MAKE THIS WHERE IT IS MOVING
             print("UPDATE LAUNCHER")
             self.moveThread = Thread(target=self.turnOnThread)
             #self.moveThread.start()
-            self.pwm.set_pwm_freq(333)
-            self.pwm.set_pwm(self.channel, 0, 3400)
+            self.pwm.set_pwm(self.channel, 0, 250)
             self.on = True
-            sleep(.25)
+            sleep(.1)
         return True
 
     def doUpdate(self, value):
         return self.updatePosition(value)
     
     def turnOnThread(self):
-        self.pwm.set_pwm_freq(333)
+        #self.pwm.set_pwm_freq(333)
         self.pwm.set_pwm(self.channel, 0, 3400)
         
     def turnOffThread(self):
-        self.pwm.set_pwm_freq(333)
+        #self.pwm.set_pwm_freq(333)
         self.pwm.set_pwm(self.channel, 0, 1800)
 
 
