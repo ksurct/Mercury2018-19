@@ -220,19 +220,22 @@ class LauncherServoComponent(Component):
 
 
 class LEDComponent(Component):
-    def __init__(self, name, controllerInput):
+    def __init__(self, name, controllerInput, channel):
         self.name = name
         self.controllerInput = controllerInput
         self.currentValue = 0
+        self.pwm = Adafruit_PCA9685.PCA9685()
+        self.pwm.set_pwm_freq(40)
+        self.channel = channel
 
     def __del__(self):
-        #Make sure lights are turned off
-        pass
+        self.pwm.set_pwm(self.channel, 0, 0)
 
     def updateValue(self, value):
-        #Update LED value based on value and self.currentValue
-        pass
+        self.pwm.set_pwm(self.channel, 0, value)
 
     def doUpdate(self, value):
-        #Method that is called from the main loop when parsing controller data
-        pass
+        if (value == 0):
+            self.updateValue(0)
+        else:
+            self.updateValue(4095)

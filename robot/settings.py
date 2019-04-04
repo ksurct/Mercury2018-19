@@ -77,5 +77,6 @@ SERVO_L_CHANNEL = 0
 ###################################
 
 # Complete these fields when LEDs are connected.
-LED_ONE_NAME = ""
-LED_ONE_CONTROLLER_INPUT = ''
+LED_ONE_NAME = "LEDs"
+LED_ONE_CONTROLLER_INPUT = 'y'
+LED_ONE_CHANNEL = 3

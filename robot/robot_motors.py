@@ -44,14 +44,14 @@ class Robot_Motors:
             # ServoComponent(SERVO_ONE_NAME, SERVO_ONE_CONTROLLER_INPUT, SERVO_ONE_CHANNEL, SERVO_ONE_HOME, SERVO_ONE_MIN, SERVO_ONE_MAX)
             LauncherServoComponent(SERVO_L_NAME, SERVO_L_CHANNEL, SERVO_L_CONTROLLER_INPUT),
             ServoComponent(SERVO_PU_NAME, SERVO_PU_CHANNEL, SERVO_PU_PRESET_DICT, SERVO_PU_MIN, SERVO_PU_MAX),
-            ServoComponent(SERVO_CAM_NAME, SERVO_CAM_CHANNEL, SERVO_CAM_PRESET_DICT, SERVO_CAM_MIN, SERVO_CAM_MAX)
+            ServoComponent(SERVO_CAM_NAME, SERVO_CAM_CHANNEL, SERVO_CAM_PRESET_DICT, SERVO_CAM_MIN, SERVO_CAM_MAX),
 
             # leds
 
             # TODO uncomment htis when these fields are programmed in settings.py
-            #LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT)
+            LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT, LED_ONE_CHANNEL)
         ]
-        print(self.outputComponentList)
+        #print(self.outputComponentList)
 		
     def __del__(self):
         GPIO.cleanup()
@@ -89,7 +89,9 @@ class Robot_Motors:
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
-                print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
+                #print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
+                c.doUpdate(self.controllerData[c.controllerInput])
+            elif isinstance(c, LEDComponent):
                 c.doUpdate(self.controllerData[c.controllerInput])
                 
     def updateOutputComponentsTEST(self):
