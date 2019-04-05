@@ -111,6 +111,7 @@ class Robot_Motors:
 
 if __name__ == '__main__':
     try:
+        sleep(30)
         r = Robot_Motors()
         print("Going into mainLoop")
         r.mainLoop()

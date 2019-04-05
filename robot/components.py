@@ -78,7 +78,7 @@ class MotorComponent():
 
     def doUpdate(self, value, doBackwards):
         #This is the method we will call from the main loop when parsing controller data
-        value *= (100/8191) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
+        value *= (40/8191) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
         if (doBackwards == 1):
             value *= -1
         if ('left' in self.name):
@@ -152,7 +152,7 @@ class ServoComponent(Component):
                 elif (self.currentPosition + valueArr[4] < self.min):
                     self.currentPosition = self.min
                 else:
-                    self.currentPosition = self.currentPosition + valueArr[4]
+                    self.currentPosition = self.currentPosition - valueArr[4]
                 self.pwm.set_pwm(self.channel, 0, self.currentPosition)
             #print(self.currentPosition)
                 
