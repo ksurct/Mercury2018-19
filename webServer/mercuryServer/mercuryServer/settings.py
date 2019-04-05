@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'controller.apps.ControllerConfig',
-    'sensors.apps.SensorsConfig'
+    'sensors.apps.SensorsConfig',
+    'cameraIP.apps.CameraipConfig'
 ]
 
 MIDDLEWARE = [
