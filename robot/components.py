@@ -147,9 +147,9 @@ class ServoComponent(Component):
                 self.sCurveThread.start()
                 self.currentPosition = self.currentPosition + 120
             elif (valueArr[4] != 0):
-                if (self.currentPosition + valueArr[4] > self.max):
+                if (self.currentPosition - valueArr[4] > self.max):
                     self.currentPosition = self.max
-                elif (self.currentPosition + valueArr[4] < self.min):
+                elif (self.currentPosition - valueArr[4] < self.min):
                     self.currentPosition = self.min
                 else:
                     self.currentPosition = self.currentPosition - valueArr[4]
