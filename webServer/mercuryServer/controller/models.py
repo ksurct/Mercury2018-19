@@ -19,6 +19,8 @@ class ControllerInput(models.Model):
     d = models.IntegerField(default = 0)
     l = models.IntegerField(default = 0)
     r = models.IntegerField(default = 0)
+    hl = models.IntegerField(default = 0)
+    lim = models.IntegerField(default = 50)
     
 
     def __str__(self):
@@ -26,6 +28,7 @@ class ControllerInput(models.Model):
         val += "rt: {} | lt: {} | rb: {} | lb: {}\n".format(self.rt, self.lt, self.rb, self.lb)
         val += "rsx: {} | rsy: {} | lsx: {} | lsy: {}".format(self.rsx, self.rsy, self.lsx, self.lsy)
         val += "u: {} | d: {} | l: {} | r: {}".format(self.u, self.d, self.l, self.r)
+        val += "hl: {} | lim: {}".format(self.hl, self.lim)
         return val
 
     def createDictionary(self):
@@ -34,5 +37,6 @@ class ControllerInput(models.Model):
         'rt': self.rt, 'lt': self.lt, 'rb': self.rb, 'lb': self.lb,
         'rsx': self.rsx, 'rsy': self.rsy, 'lsx': self.lsx, 'lsy': self.lsy,
         'u': self.u, 'd': self.d, 'l': self.l, 'r': self.r,
+        'hl': self.hl, 'lim': self.lim
         }
         return value

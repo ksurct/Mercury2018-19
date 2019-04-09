@@ -10,8 +10,11 @@ import random
 """
 
 class SensorGUI(tk.Frame):
-    def __init__(self, master=None, sensorLock=None):
+    def __init__(self, master=None, sensorLock=None, controlDataLock=None):
         self.sensorLock = sensorLock
+        self.controlDataLock = controlDataLock
+        self.hlOn = False
+        self.limVal = 50
         tk.Frame.__init__(self, master)
         self.grid()
 
@@ -71,11 +74,18 @@ class SensorGUI(tk.Frame):
         self.lbl_dsr = tk.Label(self, textvariable=self.tv_dsr)
         self.lbl_dsr.grid(column=4, row=2, padx=5, pady=5)
 
+        #Arm distance sensor
         self.t_da = "Arm: "
         self.tv_da = tk.StringVar()
         self.tv_da.set(self.t_da + str(-1))
         self.lbl_da = tk.Label(self, textvariable=self.tv_da)
         self.lbl_da.grid(column=0, row=0, padx=5, pady=5)
+
+        #Headlights button
+        self.tv_hl = tk.StringVar()
+        self.tv_hl.set("Turn headlights on")
+        self.btn_hl = tk.Button(master, command=self.updateButtons, textvariable=self.tv_hl)
+        self.btn_hl.grid(column=0, row=6, padx=5, pady=5)
     
     def updateSensorValues(self, valueDict):
         self.tv_dfl.set(self.t_dfl + str(valueDict['dfl']))
@@ -107,6 +117,17 @@ class SensorGUI(tk.Frame):
         values = self.sensorLock.requestData()
         self.updateSensorValues(values)
         self.after(100, self.getSensorValues)
+
+    def updateButtons(self):
+        if (self.hlOn == False):
+            self.hlOn = True
+            self.tv_hl.set("Turn headlights off")
+            self.controlDataLock.updateGUIParams({'hl': 0, 'lim': self.limVal})
+        else:
+            self.hlOn = False
+            self.tv_hl.set("Turn headlights on")
+            self.controlDataLock.updateGUIParams({'hl': 1, 'lim': self.limVal})
+
         
 
 if __name__ == '__main__':
