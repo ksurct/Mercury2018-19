@@ -85,14 +85,14 @@ class Robot_Motors:
             #print(c)
             if isinstance(c, MotorComponent):
                 #print(self.controllerData[c.controllerInput])
-                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
+                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
                 #print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
                 c.doUpdate(self.controllerData[c.controllerInput])
             elif isinstance(c, LEDComponent):
-                c.doUpdate(self.controllerData[c.controllerInput])
+                c.doUpdate(self.controllerData['hl'])
                 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))

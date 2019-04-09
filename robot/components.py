@@ -76,9 +76,9 @@ class MotorComponent():
         self.motorPower = pwm
         self.PWM.ChangeDutyCycle(pwm)
 
-    def doUpdate(self, value, doBackwards):
+    def doUpdate(self, value, doBackwards, limiter):
         #This is the method we will call from the main loop when parsing controller data
-        value *= (40/8191) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to 100
+        value *= (limiter / 8191) #This translates the trigger range of 0 to 8191 into the pwm range of 0 to limiter (max of 100)
         if (doBackwards == 1):
             value *= -1
         if ('left' in self.name):
