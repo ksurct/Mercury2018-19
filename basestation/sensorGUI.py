@@ -84,8 +84,17 @@ class SensorGUI(tk.Frame):
         #Headlights button
         self.tv_hl = tk.StringVar()
         self.tv_hl.set("Turn headlights on")
-        self.btn_hl = tk.Button(master, command=self.updateButtons, textvariable=self.tv_hl)
+        self.btn_hl = tk.Button(master, command=self.updateHL, textvariable=self.tv_hl)
         self.btn_hl.grid(column=0, row=6, padx=5, pady=5)
+
+        #Entry box for limiter
+        self.e_lim = tk.Entry(master)
+        self.e_lim.insert(0, "50")
+        self.e_lim.grid(column=1, row=7, padx=5, pady=5)
+
+        #Button to update limiter
+        self.btn_lim = tk.Button(master, command=self.updateLim, text="Update Motor Limiter")
+        self.btn_lim.grid(column=0, row=7, padx=5, pady=5)
     
     def updateSensorValues(self, valueDict):
         self.tv_dfl.set(self.t_dfl + str(valueDict['dfl']))
@@ -118,15 +127,31 @@ class SensorGUI(tk.Frame):
         self.updateSensorValues(values)
         self.after(100, self.getSensorValues)
 
-    def updateButtons(self):
+    def updateControlDataLock(self, HL):
+        self.controlDataLock.updateGUIParams({'hl': HL, 'lim': self.limVal})
+
+    def updateHL(self):
         if (self.hlOn == False):
             self.hlOn = True
             self.tv_hl.set("Turn headlights off")
-            self.controlDataLock.updateGUIParams({'hl': 0, 'lim': self.limVal})
+            self.updateControlDataLock(1)
         else:
             self.hlOn = False
             self.tv_hl.set("Turn headlights on")
-            self.controlDataLock.updateGUIParams({'hl': 1, 'lim': self.limVal})
+            self.updateControlDataLock(0)
+
+    def updateLim(self):
+        tempLim = self.e_lim.get()
+        try:
+            int(tempLim)
+        except:
+            self.e_lim.delete(0, len(tempLim) + 1)
+            self.e_lim.insert(0, 50)
+        self.limVal = self.e_lim.get()
+        if (self.hlOn == False):
+            self.updateControlDataLock(0)
+        else:
+            self.updateControlDataLock(1)
 
         
 

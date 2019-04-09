@@ -93,7 +93,7 @@ class Basestation:
         
         try:
             #Make tasks and put them in loop
-            print("Inside try")
+            #print("Inside try")
             while True:
                 self.postDataTest() #Gets controller data and pushes to web server
                 tempSensData = self.getDataTest() #Get sensor data from web server
@@ -106,6 +106,7 @@ class Basestation:
 
     def postDataTest(self):
         self.getControllerData()
+        self.controllerData.updateController(self.tempControlData)
         self.basestationNetwork.postClientData(self.controllerData.requestControlData())
 
     def getDataTest(self):
