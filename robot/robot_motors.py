@@ -71,6 +71,12 @@ class Robot_Motors:
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
                             #Plus the network is down, so it wouldn't make sense to try and send data again. 
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
+                
+                #TODO Do button debouncing for 90 degree turn code below (before self.updateOutputComponents)
+                #Use an object variable (self.didTurn) that is initialized to False in __init__() to do debouncing with
+                #Should probably 'continue' after doing a turn so we don't do self.updateOutputComponents
+
+
                 self.updateOutputComponents()
 
         except KeyboardInterrupt:
