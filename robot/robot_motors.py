@@ -71,6 +71,12 @@ class Robot_Motors:
                             #We can do this because sending sensor data isn't as important as getting updated controller data.
                             #Plus the network is down, so it wouldn't make sense to try and send data again. 
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
+                
+                #TODO Do button debouncing for 90 degree turn code below (before self.updateOutputComponents)
+                #Use an object variable (self.didTurn) that is initialized to False in __init__() to do debouncing with
+                #Should probably 'continue' after doing a turn so we don't do self.updateOutputComponents
+
+
                 self.updateOutputComponents()
 
         except KeyboardInterrupt:
@@ -85,14 +91,14 @@ class Robot_Motors:
             #print(c)
             if isinstance(c, MotorComponent):
                 #print(self.controllerData[c.controllerInput])
-                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput])
+                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
                 #print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
                 c.doUpdate(self.controllerData[c.controllerInput])
             elif isinstance(c, LEDComponent):
-                c.doUpdate(self.controllerData[c.controllerInput])
+                c.doUpdate(self.controllerData['hl'])
                 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
@@ -111,6 +117,7 @@ class Robot_Motors:
 
 if __name__ == '__main__':
     try:
+        sleep(30)
         r = Robot_Motors()
         print("Going into mainLoop")
         r.mainLoop()
