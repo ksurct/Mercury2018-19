@@ -1,8 +1,6 @@
 """
-	File that holds main loop for the robot
+	File that holds main loop for the robot motors and servos
 	The robot will get controller data from the web server, translate that into motor and sensor positions, and then update the positions accordingly.
-	The robot will also publish sensor data to the web service for the basestation. 
-	We will maybe have two separate Pis for camera and motors/servos etc. The camera Pi should have its own folder and code and such
 """
 import logging
 from time import sleep, ctime
@@ -22,17 +20,17 @@ class Robot_Motors:
 
         self.servoArr = [0, 0, 0, 0, 0]
 
+        self.turn90DegFlag = False
+
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
         # We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
         # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f
         
-        #We probably want to create separate lists for motors and servos since motors need the backwards part and servos don't
         GPIO.cleanup()
         self.outputComponentList = [
             # motors
 
-            # TODO Uncomment this when these fields are programmed in Settings.py
             MotorComponent(MOTOR_FR_NAME, MOTOR_FR_CONTROLLER_INPUT, MOTOR_FR_BACKWARD_INPUT, MOTOR_FR_DIRECTION_PIN, MOTOR_FR_PWM_PIN),
             MotorComponent(MOTOR_FL_NAME, MOTOR_FL_CONTROLLER_INPUT, MOTOR_FL_BACKWARD_INPUT, MOTOR_FL_DIRECTION_PIN, MOTOR_FL_PWM_PIN),
             MotorComponent(MOTOR_BR_NAME, MOTOR_BR_CONTROLLER_INPUT, MOTOR_BR_BACKWARD_INPUT, MOTOR_BR_DIRECTION_PIN, MOTOR_BR_PWM_PIN),
@@ -40,18 +38,14 @@ class Robot_Motors:
 
             # servos
 
-            # TODO uncomment this when these fields are programmed in settings.py
-            # ServoComponent(SERVO_ONE_NAME, SERVO_ONE_CONTROLLER_INPUT, SERVO_ONE_CHANNEL, SERVO_ONE_HOME, SERVO_ONE_MIN, SERVO_ONE_MAX)
             LauncherServoComponent(SERVO_L_NAME, SERVO_L_CHANNEL, SERVO_L_CONTROLLER_INPUT),
             ServoComponent(SERVO_PU_NAME, SERVO_PU_CHANNEL, SERVO_PU_PRESET_DICT, SERVO_PU_MIN, SERVO_PU_MAX),
             ServoComponent(SERVO_CAM_NAME, SERVO_CAM_CHANNEL, SERVO_CAM_PRESET_DICT, SERVO_CAM_MIN, SERVO_CAM_MAX),
 
             # leds
 
-            # TODO uncomment htis when these fields are programmed in settings.py
             LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT, LED_ONE_CHANNEL)
         ]
-        #print(self.outputComponentList)
 		
     def __del__(self):
         GPIO.cleanup()
@@ -68,14 +62,23 @@ class Robot_Motors:
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
-                            #We can do this because sending sensor data isn't as important as getting updated controller data.
-                            #Plus the network is down, so it wouldn't make sense to try and send data again. 
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 
                 #TODO Do button debouncing for 90 degree turn code below (before self.updateOutputComponents)
                 #Use an object variable (self.didTurn) that is initialized to False in __init__() to do debouncing with
                 #Should probably 'continue' after doing a turn so we don't do self.updateOutputComponents
-
+                if (self.controllerData['b'] == 1):
+                    if (self.turn90DegFlag == False):
+                        self.turn90DegFlag = True
+                        self.turn90CW()
+                        continue
+                elif (self.controllerData['x'] == 1):
+                    if (self.turn90DegFlag == False):
+                        self.turn90DegFlag = True
+                        self.turn90CCW()
+                        continue
+                else:
+                    self.turn90DegFlag = False
 
                 self.updateOutputComponents()
 
@@ -85,17 +88,44 @@ class Robot_Motors:
             #ensure robot loop gets closed
             self.logger.info("Event loop closed. Exiting program")
             GPIO.cleanup()
+
+    def turn90CW(self):
+        for m in self.outputComponentList:
+            if (isinstance(m, MotorComponent)):
+                if ('left' in m.name):
+                    m.doUpdate(8191, 0, 100)
+                elif ('right' in m.name):
+                    m.doUpdate(8191, 1, 100)
+        sleep(.4) #TODO Update this value with the correct sleep time
+        for m in self.outputComponentList:
+            if (isinstance(m, MotorComponent)):
+                if ('left' in m.name):
+                    m.doUpdate(0, 0, 100)
+                elif ('right' in m.name):
+                    m.doUpdate(0, 0, 100)
+
+    def turn90CCW(self):
+        for m in self.outputComponentList:
+            if (isinstance(m, MotorComponent)):
+                if ('left' in m.name):
+                    m.doUpdate(8191, 1, 100)
+                elif ('right' in m.name):
+                    m.doUpdate(8191, 0, 100)
+        sleep(.4) #TODO Update this value with the correct sleep time
+        for m in self.outputComponentList:
+            if (isinstance(m, MotorComponent)):
+                if ('left' in m.name):
+                    m.doUpdate(0, 0, 100)
+                elif ('right' in m.name):
+                    m.doUpdate(0, 0, 100)
     
     def updateOutputComponents(self):
         for c in self.outputComponentList:
-            #print(c)
             if isinstance(c, MotorComponent):
-                #print(self.controllerData[c.controllerInput])
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
-                #print("Updating LauncherServo with value of {} channel {}".format(self.controllerData[c.controllerInput], c.channel))
                 c.doUpdate(self.controllerData[c.controllerInput])
             elif isinstance(c, LEDComponent):
                 c.doUpdate(self.controllerData['hl'])
@@ -110,9 +140,7 @@ class Robot_Motors:
             if(self.controllerDataTuple[1] == False):
                 self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                 sleep(2)
-                continue #This goes back to the top of the while loop and forces us to get new controller values
-                        #We can do this because sending sensor data isn't as important as getting updated controller data.
-                        #Plus the network is down, so it wouldn't make sense to try and send data again.   
+                continue #This goes back to the top of the while loop and forces us to get new controller values  
             self.updateOutputComponentsTEST()
 
 if __name__ == '__main__':
