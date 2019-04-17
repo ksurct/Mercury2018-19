@@ -17,6 +17,12 @@ WEB_SERVER_PORT = "8000"
 #   Sensor Settings
 ###################################
 
+# TODO update these arguments with actual physical channels when we setup the hardware
+TOF0_CHANNEL_NUM = 0
+TOF1_CHANNEL_NUM = 1
+TOF2_CHANNEL_NUM = 2
+TOF3_CHANNEL_NUM = 3
+TCA9548A_I2C_ADDR = 0x70
 
 ###################################
 #   Motor Settings

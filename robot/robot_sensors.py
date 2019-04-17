@@ -31,10 +31,10 @@ class Robot_Sensors:
         # Create our list of sensors. The first input argument is the channel on 
         # the multiplexer.
         # TODO update these input arguments to work with settings.py
-        tof0 = VL53L0X.VL53L0X(TCA9548A_Num=0, TCA9548A_Addr=0x70)
-        tof1 = VL53L0X.VL53L0X(TCA9548A_Num=1, TCA9548A_Addr=0x70)
-        tof2 = VL53L0X.VL53L0X(TCA9548A_Num=2, TCA9548A_Addr=0x70)
-        tof3 = VL53L0X.VL53L0X(TCA9548A_Num=3, TCA9548A_Addr=0x70)
+        tof0 = VL53L0X.VL53L0X(TOF0_CHANNEL_NUM, TCA9548A_I2C_ADDR) #TCA9548A_I2C_ADDR = 0x70
+        tof1 = VL53L0X.VL53L0X(TOF1_CHANNEL_NUM, TCA9548A_I2C_ADDR)
+        tof2 = VL53L0X.VL53L0X(TOF2_CHANNEL_NUM, TCA9548A_I2C_ADDR)
+        tof3 = VL53L0X.VL53L0X(TOF3_CHANNEL_NUM, TCA9548A_I2C_ADDR)
 
         # TODO does this need to be a dictionary to work with the for loop
         self.sensorList = [
