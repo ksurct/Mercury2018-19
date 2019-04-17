@@ -9,9 +9,10 @@ from time import sleep, ctime
 from random import randint
 from threading import Thread
 from networking import RobotNetwork
-from components import *
+#from components import *
+# import RPi.GPIO as GPIO
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
-import RPi.GPIO as GPIO
+import VL53L0X # TODO include this file where it needs to be
 
 class Robot_Sensors:
     def __init__(self):
@@ -20,21 +21,40 @@ class Robot_Sensors:
         logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
+
+
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
         # We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
         # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f
         
-        self.sensorList = [
+        # Create our list of sensors. The first input argument is the channel on 
+        # the multiplexer.
+        # TODO update these input arguments to work with settings.py
+        tof0 = VL53L0X.VL53L0X(TCA9548A_Num=0, TCA9548A_Addr=0x70)
+        tof1 = VL53L0X.VL53L0X(TCA9548A_Num=1, TCA9548A_Addr=0x70)
+        tof2 = VL53L0X.VL53L0X(TCA9548A_Num=2, TCA9548A_Addr=0x70)
+        tof3 = VL53L0X.VL53L0X(TCA9548A_Num=3, TCA9548A_Addr=0x70)
 
+        # TODO does this need to be a dictionary to work with the for loop
+        self.sensorList = [
+            tof0,
+            tof1,
+            tof2,
+            tof3
         ]
 
-        self.sensorValues = {
-            'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
-			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0, 'da': 0
-        }
+        # This was the ranging mode that we tested with.
+        # Maybe we can optimize this further, if we want.
+        tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
-		
+        self.sensorValues = {
+            'fr': 0, 'fl': 0, 'l': 0, 'r': 0,
+        }
+        # Not sure what these are, reece?
 
     def mainLoop(self):
         try:
@@ -52,7 +72,9 @@ class Robot_Sensors:
 
     def updateSensorValues(self):
         for s in self.sensorValues:
-            self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
+            #self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
+            # Alternatively, don't use sensor components
+            self.sensorValues[s] = self.sensorList[s].get_distance()
 
     def updateSensorValuesTEST(self):
         for s in self.sensorValues:

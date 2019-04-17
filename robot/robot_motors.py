@@ -116,7 +116,7 @@ class Robot_Motors:
                 elif (self.driveState == "danger"):
                     if (cd['lb'] == 1 and cd['rb'] == 1 and cd['lt'] != 0 and cd['rt'] != 0):
                         # TODO update motors
-                    elif(dangerCount > DANGER_COUNT_THRESHOLD):
+                    elif (dangerCount > DANGER_COUNT_THRESHOLD):
                         self.driveState = 'dangerActive'
                         dangerCount = 0
                     else:
