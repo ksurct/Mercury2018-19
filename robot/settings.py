@@ -9,7 +9,8 @@
 #   Networking Settings
 ###################################
 #WEB_SERVER_ADDRESS = "129.130.10.251" #Game Jam hookup
-WEB_SERVER_ADDRESS = "10.135.79.80" #IP for Reece's apartment: "70.179.163.182"
+WEB_SERVER_ADDRESS = "10.135.79.80"
+#WEB_SERVER_ADDRESS = "70.179.163.182" #IP for Reece's apartment
 WEB_SERVER_PORT = "8000"
 
 ###################################
