@@ -82,5 +82,7 @@ LED_ONE_NAME = "LEDs"
 LED_ONE_CONTROLLER_INPUT = 'y'
 LED_ONE_CHANNEL = 3
 
+###################################
 # State transition code
-DANGER_COUNT_THRESHOLD = 50
+###################################
+DANGER_COUNT_THRESHOLD = 50 # This hasn't been tested, we can probably optimize here
