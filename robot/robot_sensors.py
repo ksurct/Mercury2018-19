@@ -10,7 +10,7 @@ from random import randint
 from threading import Thread
 from networking import RobotNetwork
 #from components import *
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
 import VL53L0X # TODO include this file where it needs to be
 
