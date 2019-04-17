@@ -21,6 +21,14 @@ class Robot_Motors:
         self.servoArr = [0, 0, 0, 0, 0]
 
         self.turn90DegFlag = False
+        
+        # Create drive state
+        # Drive state options are: "active", "auto", "danger", "dangerActive"
+        # active - control the robot as normal
+        # auto - engage autopilot to keep the robot moving forward, straight
+        # danger - The front right sensor is reading a wall too close, stop movement momentarily
+        # dangerActive - The front right sensor is reading too close, but we've waited long enough to be able to move
+        self.driveState = "active" # default to active
 
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
@@ -52,6 +60,8 @@ class Robot_Motors:
         
     def mainLoop(self):
         try:
+            dangerCount = 0 # initialize this variable for state transition logic
+
             print("Right before while true")
             while True:
                 #Get controller data and update motors, servos, LEDs
@@ -81,6 +91,45 @@ class Robot_Motors:
                     self.turn90DegFlag = False
 
                 self.updateOutputComponents()
+
+                # Read Sensor data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                # Determine next state
+                if (self.driveState == "active"):
+                    # TODO figure out how to read from sensors here
+                    '''
+                    if (right sensor < 2in):
+                        self.driveState = "danger"
+                        dangerCount = 0
+                    elif(controller shows auto):
+                        self.driveState = "auto"
+                    '''
+                elif (self.driveState == "auto"):
+                    # TODO figure out how to read from sensors here
+                    '''
+                    if (right sensor < 2in):
+                        self.driveState = "danger"
+                        dangerCount = 0
+                    elif(side sensor reads greater than 1 foot):
+                        self.driveState = "active"
+                    '''
+                elif (self.driveState == "danger"):
+                    if (cd['lb'] == 1 and cd['rb'] == 1 and cd['lt'] != 0 and cd['rt'] != 0):
+                        # TODO update motors
+                    elif(dangerCount > DANGER_COUNT_THRESHOLD):
+                        self.driveState = 'dangerActive'
+                        dangerCount = 0
+                    else:
+                        dangerCount += 1
+                elif (self.driveState == "dangerActive"):
+                    # TODO figure out how to read from sensors here
+                    '''
+                    if(sensors > 3-4 inches):
+                        self.dangerState = "active"
+                    '''
+                else:
+                    # This is bad maybe throw error or set driveState to active here
+
 
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt detected. Exiting now.")
