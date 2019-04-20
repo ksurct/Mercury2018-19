@@ -23,5 +23,6 @@ urlpatterns = [
     #path('get/', views.get, name='get'),
     path('controller/', include('controller.urls')),
     path('sensors/', include('sensors.urls')),
-    path('cameraIP/', include('cameraIP.urls'))
+    path('cameraIP/', include('cameraIP.urls')),
+    path('ControllerAndSensor/', include('ControllerAndSensor.urls'))
 ]
