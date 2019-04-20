@@ -30,19 +30,18 @@ class Robot_Sensors:
         
         # Create our list of sensors. The first input argument is the channel on 
         # the multiplexer.
-        # TODO update these input arguments to work with settings.py
-        tof0 = VL53L0X.VL53L0X(TOF0_CHANNEL_NUM, TCA9548A_I2C_ADDR) #TCA9548A_I2C_ADDR = 0x70
-        tof1 = VL53L0X.VL53L0X(TOF1_CHANNEL_NUM, TCA9548A_I2C_ADDR)
-        tof2 = VL53L0X.VL53L0X(TOF2_CHANNEL_NUM, TCA9548A_I2C_ADDR)
-        tof3 = VL53L0X.VL53L0X(TOF3_CHANNEL_NUM, TCA9548A_I2C_ADDR)
+        tof0 = VL53L0X.VL53L0X(TCA9548A_Num=TOF0_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR) #TCA9548A_I2C_ADDR = 0x70
+        tof1 = VL53L0X.VL53L0X(TCA9548A_Num=TOF1_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
+        tof2 = VL53L0X.VL53L0X(TCA9548A_Num=TOF2_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
+        tof3 = VL53L0X.VL53L0X(TCA9548A_Num=TOF3_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
 
         # TODO does this need to be a dictionary to work with the for loop
-        self.sensorList = [
-            tof0,
-            tof1,
-            tof2,
-            tof3
-        ]
+        self.sensorList = {
+            'dfr' : tof0,
+            'dfl' : tof1,
+            'dsl' : tof2,
+            'dsr' : tof3
+        }
 
         # This was the ranging mode that we tested with.
         # Maybe we can optimize this further, if we want.
@@ -52,16 +51,26 @@ class Robot_Sensors:
         tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
         self.sensorValues = {
-            'fr': 0, 'fl': 0, 'l': 0, 'r': 0,
+            'dfr': 0, 'dfl': 0, 'dsl': 0, 'dsr': 0,
         }
+        
+        self.timing = tof0.get_timing()
+        if (self.timing < 20000):
+            self.timing = 20000
         # Not sure what these are, reece?
+        
+    def __del__(self):
+        for s in self.sensorList:
+            self.sensorList[s].stop_ranging()
 
     def mainLoop(self):
         try:
             while True:
                 #Get sensor data and push it to the website
-                self.updateSensorValuesTEST()
+                self.updateSensorValues()
                 self.network.updateSensorData(self.sensorValues)
+                #print(self.sensorValues)
+                sleep(self.timing/1000000.00)
 
         except KeyboardInterrupt:
             self.logger.info("Keyboard interrupt detected. Exiting now.")
@@ -71,7 +80,7 @@ class Robot_Sensors:
             GPIO.cleanup()
 
     def updateSensorValues(self):
-        for s in self.sensorValues:
+        for s in self.sensorList:
             #self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
             # Alternatively, don't use sensor components
             self.sensorValues[s] = self.sensorList[s].get_distance()
@@ -89,8 +98,8 @@ if __name__ == '__main__':
     try:
         r = Robot_Sensors()
         r.mainLoop()
-    except:
-        print("ERROR")
+    except Exception as e:
+        print("ERROR {}".format(e))
         GPIO.cleanup()
 
     """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
