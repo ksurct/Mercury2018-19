@@ -36,7 +36,8 @@ class Robot_Sensors:
         tof2 = VL53L0X.VL53L0X(TCA9548A_Num=TOF2_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
         tof3 = VL53L0X.VL53L0X(TCA9548A_Num=TOF3_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
 
-        # TODO does this need to be a dictionary to work with the for loop
+        # TODO does this need to be a dictionary to
+        #  work with the for loop
         self.sensorList = {
             'dfr' : tof0,
             'dfl' : tof1,
@@ -44,11 +45,18 @@ class Robot_Sensors:
             'dsr' : tof3
         }
 
+        # This was the ranging mode that we tested with.
+        # Maybe we can optimize this further, if we want.
+        tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        tof3.start_ranging(VL53L0X.VL53L0X_BE   TTER_ACCURACY_MODE)
+
         # Create our Queues for filtering
-        lpf0 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
-        lpf1 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
-        lpf2 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
-        lpf3 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
+        lpf0 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
+        lpf1 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
+        lpf2 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
+        lpf3 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
 
         self.lfp_list = {
             'dfr' : lpf0,
@@ -57,13 +65,6 @@ class Robot_Sensors:
             'dsr' : lpf3
         }
 
-        # This was the ranging mode that we tested with.
-        # Maybe we can optimize this further, if we want.
-        tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-        tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-        tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-        tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-
         self.sensorValues = {
             'dfr': 0, 
             'dfl': 0, 
@@ -71,10 +72,10 @@ class Robot_Sensors:
             'dsr': 0,
         }
         
+        # Setup timing for sensors
         self.timing = tof0.get_timing()
         if (self.timing < 20000):
             self.timing = 20000
-        # Not sure what these are, reece?
         
     def __del__(self):
         for s in self.sensorList:
