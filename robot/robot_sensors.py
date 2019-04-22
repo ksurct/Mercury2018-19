@@ -50,7 +50,7 @@ class Robot_Sensors:
         tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-        tof3.start_ranging(VL53L0X.VL53L0X_BE   TTER_ACCURACY_MODE)
+        tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
         # Create our Queues for filtering
         lpf0 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
