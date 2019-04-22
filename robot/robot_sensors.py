@@ -105,6 +105,8 @@ class Robot_Sensors:
             
             # Get the distance from the cooresponding sensor
             distance = self.sensorList[s].get_distance()
+            if (distance == 0):
+                continue
             
             # If full, create room the the next input
             if self.lfp_list[s].isFull():
