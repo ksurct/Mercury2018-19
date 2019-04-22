@@ -18,9 +18,9 @@ class Component:
         #Make sure everything has a method that can be called by the main method
         raise NotImplementedError()
 
-class SensorComponent(Component):
+class SensorComponent(Component, VL53L0X_Channel_num):
     def __init__(self, name, channel):
-        self.name = name
+        self.baseSensor
         self.channel = channel
 
     def __del__(self):
