@@ -194,7 +194,7 @@ class Robot_Motors:
 
 if __name__ == '__main__':
     try:
-        sleep(30)
+        #sleep(30) This sleep is now handled in robot_motors_script.sh
         r = Robot_Motors()
         print("Going into mainLoop")
         r.mainLoop()
