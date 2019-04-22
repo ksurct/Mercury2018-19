@@ -24,6 +24,8 @@ TOF2_CHANNEL_NUM = 2
 TOF3_CHANNEL_NUM = 3
 TCA9548A_I2C_ADDR = 0x70
 
+SENSOR_FILTERING_QUEUE_LEN = 2
+
 ###################################
 #   Motor Settings
 ###################################

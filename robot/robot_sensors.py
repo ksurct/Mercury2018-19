@@ -12,7 +12,8 @@ from networking import RobotNetwork
 #from components import *
 import RPi.GPIO as GPIO
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
-import VL53L0X # TODO include this file where it needs to be
+import VL53L0X
+import Queue_for_lpf as QueueLPF
 
 class Robot_Sensors:
     def __init__(self):
@@ -43,6 +44,19 @@ class Robot_Sensors:
             'dsr' : tof3
         }
 
+        # Create our Queues for filtering
+        lpf0 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
+        lpf1 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
+        lpf2 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
+        lpf3 = QueueLPF(SENSOR_FILTERING_QUEUE_LEN)
+
+        self.lfp_list = {
+            'dfr' : lpf0,
+            'dfl' : lpf1,
+            'dsl' : lpf2,
+            'dsr' : lpf3
+        }
+
         # This was the ranging mode that we tested with.
         # Maybe we can optimize this further, if we want.
         tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
@@ -51,7 +65,10 @@ class Robot_Sensors:
         tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
         self.sensorValues = {
-            'dfr': 0, 'dfl': 0, 'dsl': 0, 'dsr': 0,
+            'dfr': 0, 
+            'dfl': 0, 
+            'dsl': 0, 
+            'dsr': 0,
         }
         
         self.timing = tof0.get_timing()
@@ -83,7 +100,22 @@ class Robot_Sensors:
         for s in self.sensorList:
             #self.sensorValues[s] = s.doUpdate(self.sensorList[s]) #Definitely test this line when we get sensors
             # Alternatively, don't use sensor components
-            self.sensorValues[s] = self.sensorList[s].get_distance()
+            #self.sensorValues[s] = self.sensorList[s].get_distance()
+            
+            # Get the distance from the cooresponding sensor
+            distance = self.sensorList[s].get_distance()
+            
+            # If full, create room the the next input
+            if self.lfp_list[s].isFull():
+                self.lfp_list[s].DeQueue()
+
+            # Add the distance to the queue
+            self.lfp_list[s].EnQueue(distance)
+
+            # Set the sensor value equal to the average
+            self.sensorValues[s] = self.lfp_list[s].get_avg_val()
+            
+
 
     def updateSensorValuesTEST(self):
         for s in self.sensorValues:
