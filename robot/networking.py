@@ -40,6 +40,13 @@ class RobotNetwork:
             #Above should be the list of all errors we encounter, but we can update the list if needed by just adding new errors to the list
             return (self.defaultControllerValues, False)
 
+    def getControllerAndSensorStatus(self):
+        try:
+            r = requests.get(self.url + '/ControllerAndSensor/')
+            return (json.loads(r.text), True)
+        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+            return ([self.defaultControllerValues, {}], False)
+
     """
         This method will be used to PUT sensor data onto the web server
         Ideally, this method will be run asynchronously

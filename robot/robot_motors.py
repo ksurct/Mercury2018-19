@@ -65,10 +65,12 @@ class Robot_Motors:
             print("Right before while true")
             while True:
                 #Get controller data and update motors, servos, LEDs
-                self.controllerDataTuple = self.network.getControllerStatus()
-                self.controllerData = self.controllerDataTuple[0]
+                self.controllerSensorDataTuple = self.network.getControllerAndSensorStatus()
+                self.controllerSensorData = self.controllerSensorDataTuple[0]
+                self.controllerData = self.controllerSensorData[0] #CONTROLLER DATA FROM THE BASESTATION
+                self.sensorData = self.controllerSensorData[1] #SENSOR DATA FROM SECOND PI
                 #print(self.controllerData)
-                if(self.controllerDataTuple[1] == False):
+                if(self.controllerSensorDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
                     continue #This goes back to the top of the while loop and forces us to get new controller values
@@ -116,6 +118,7 @@ class Robot_Motors:
                 elif (self.driveState == "danger"):
                     if (cd['lb'] == 1 and cd['rb'] == 1 and cd['lt'] != 0 and cd['rt'] != 0):
                         # TODO update motors
+                        pass
                     elif (dangerCount > DANGER_COUNT_THRESHOLD):
                         self.driveState = 'dangerActive'
                         dangerCount = 0
@@ -129,6 +132,7 @@ class Robot_Motors:
                     '''
                 else:
                     # This is bad maybe throw error or set driveState to active here
+                    pass
 
 
         except KeyboardInterrupt:
@@ -178,6 +182,11 @@ class Robot_Motors:
                 c.doUpdate(self.controllerData[c.controllerInput])
             elif isinstance(c, LEDComponent):
                 c.doUpdate(self.controllerData['hl'])
+
+    def updateMotorComponents(self):
+        for c in self.outputComponentList:
+            if isinstance(c, MotorComponent):
+                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], 40) #Force limit of 40 so we move slowly
                 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
