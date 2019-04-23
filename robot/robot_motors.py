@@ -73,6 +73,7 @@ class Robot_Motors:
                 if(self.controllerSensorDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
+                    self.updateMotorComponents()
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 
@@ -150,7 +151,7 @@ class Robot_Motors:
                     m.doUpdate(8191, 0, 100)
                 elif ('right' in m.name):
                     m.doUpdate(8191, 1, 100)
-        sleep(.45) #TODO Update this value with the correct sleep time
+        sleep(.5) #TODO Update this value with the correct sleep time
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
                 if ('left' in m.name):
@@ -165,7 +166,7 @@ class Robot_Motors:
                     m.doUpdate(8191, 1, 100)
                 elif ('right' in m.name):
                     m.doUpdate(8191, 0, 100)
-        sleep(.45) #TODO Update this value with the correct sleep time
+        sleep(.5) #TODO Update this value with the correct sleep time
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
                 if ('left' in m.name):

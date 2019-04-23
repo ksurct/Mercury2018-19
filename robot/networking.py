@@ -14,6 +14,7 @@ class RobotNetwork:
         'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
         'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
         'u': 0, 'd': 0, 'l': 0, 'r': 0,
+        'lim': 50, 'hl': 0
     }
     
     def __init__(self, url):
@@ -36,7 +37,8 @@ class RobotNetwork:
         try:
             r = requests.get(self.url + '/controller/get/')
             return (json.loads(r.text), True)
-        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+        #except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+        except (requests.exceptions.ConnectionError):
             #Above should be the list of all errors we encounter, but we can update the list if needed by just adding new errors to the list
             return (self.defaultControllerValues, False)
 
@@ -44,7 +46,8 @@ class RobotNetwork:
         try:
             r = requests.get(self.url + '/ControllerAndSensor/')
             return (json.loads(r.text), True)
-        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+        #except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+        except (requests.exceptions.ConnectionError):
             return ([self.defaultControllerValues, {}], False)
 
     """
@@ -57,5 +60,6 @@ class RobotNetwork:
         #UPDATE SENSOR DICTIONARY ONCE WE KNOW WHAT SENSORS WE WANT
         try:
             r = requests.post(self.url + '/sensors/update/' + json.dumps(sensorData) + '/')
-        except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
-            pass
+        #except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+        except (requests.exceptions.ConnectionError):
+            return
