@@ -9,9 +9,9 @@ while True:
     try:
         r = requests.get('http://google.com')
         if (r.status_code == 200):
-            print("Good response")
+            pass
         else:
             os.system('sudo sh reconnect.sh')
         sleep(5)
-    except (ConnectionRefusedError, ConnectionResetError, requests.exceptions.ConnectionError):
+    except (requests.exceptions.ConnectionError):
         os.system('sudo sh reconnect.sh')
