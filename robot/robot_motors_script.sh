@@ -6,5 +6,5 @@
 
 while true ; do
     sleep 20
-    python /home/pi/Desktop/mercury18-19Code/Mercury2018-19/robot/robot_motors.py
+    python3 /home/pi/Desktop/mercury18-19Code/Mercury2018-19/robot/robot_motors.py
 done
