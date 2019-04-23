@@ -69,7 +69,7 @@ class Robot_Motors:
                 self.controllerSensorData = self.controllerSensorDataTuple[0]
                 self.controllerData = self.controllerSensorData[0] #CONTROLLER DATA FROM THE BASESTATION
                 self.sensorData = self.controllerSensorData[1] #SENSOR DATA FROM SECOND PI
-                print(self.controllerData)
+                #print(self.controllerData)
                 if(self.controllerSensorDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
@@ -150,7 +150,7 @@ class Robot_Motors:
                     m.doUpdate(8191, 0, 100)
                 elif ('right' in m.name):
                     m.doUpdate(8191, 1, 100)
-        sleep(.4) #TODO Update this value with the correct sleep time
+        sleep(.45) #TODO Update this value with the correct sleep time
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
                 if ('left' in m.name):
@@ -165,7 +165,7 @@ class Robot_Motors:
                     m.doUpdate(8191, 1, 100)
                 elif ('right' in m.name):
                     m.doUpdate(8191, 0, 100)
-        sleep(.4) #TODO Update this value with the correct sleep time
+        sleep(.45) #TODO Update this value with the correct sleep time
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
                 if ('left' in m.name):
@@ -176,7 +176,7 @@ class Robot_Motors:
     def updateOutputComponents(self):
         for c in self.outputComponentList:
             if isinstance(c, MotorComponent):
-                print("Doing update on MotorComponent {}".format(c.name))
+                #print("Doing update on MotorComponent {}".format(c.name))
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)

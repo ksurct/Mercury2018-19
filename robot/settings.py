@@ -67,7 +67,7 @@ MOTOR_BL_PWM_PIN = 16
 # Complete these fields when servos are connected.
 SERVO_PU_NAME = 'picky-uppy'
 SERVO_PU_CHANNEL = 1
-SERVO_PU_PRESET_DICT = {'deposit': 155, 'down': 360, 'contain':325}
+SERVO_PU_PRESET_DICT = {'deposit': 155, 'down': 360, 'contain': 325, 'home': 182}
 SERVO_PU_MIN = 154
 SERVO_PU_MAX = 360
 

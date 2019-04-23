@@ -18,9 +18,9 @@ class Component:
         #Make sure everything has a method that can be called by the main method
         raise NotImplementedError()
 
-class SensorComponent(Component, VL53L0X_Channel_num):
+class SensorComponent(Component): #, VL53L0X_Channel_num):
     def __init__(self, name, channel):
-        self.baseSensor
+        self.baseSensor = ''
         self.channel = channel
 
     def __del__(self):
@@ -132,20 +132,17 @@ class ServoComponent(Component):
                 self.currentPosition = self.presetDictionary['deposit']
             elif (valueArr[1] == 1):
                 #All the way down
-                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
-                self.sCurveThread.start()
-                self.currentPosition = self.currentPosition + 120
+                #self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
+                #self.sCurveThread.start()
+                self.pwm.set_pwm(self.channel, 0, self.presetDictionary['contain'])
+                self.currentPosition = self.presetDictionary['contain']
                 # I just wanted something else to commit
             elif (valueArr[2] == 1):
                 #All the way down
-                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
-                self.sCurveThread.start()
-                self.currentPosition = self.currentPosition + 120
-            elif (valueArr[3] == 1):
-                #All the way down
-                self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
-                self.sCurveThread.start()
-                self.currentPosition = self.currentPosition + 120
+                #self.sCurveThread = Thread(target=self.sCurve, args=(0, self.currentPosition, 120))
+                #self.sCurveThread.start()
+                self.pwm.set_pwm(self.channel, 0, self.presetDictionary['down'])
+                self.currentPosition = self.presetDictionary['down']
             elif (valueArr[4] != 0):
                 if (self.currentPosition - valueArr[4] > self.max):
                     self.currentPosition = self.max
@@ -167,7 +164,7 @@ class ServoComponent(Component):
             Format for valueArr:
             ['up', 'down', 'left', 'right', 'lStickY']
         """
-        return self.updatePosition(valueArr)
+        self.updatePosition(valueArr)
 
     def sCurve(self, on, start, relativeAngle, upperbound=4095, delayTime=0.08):
         for i in range(-14, 14):
