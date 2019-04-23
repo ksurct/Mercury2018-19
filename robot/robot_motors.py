@@ -69,7 +69,7 @@ class Robot_Motors:
                 self.controllerSensorData = self.controllerSensorDataTuple[0]
                 self.controllerData = self.controllerSensorData[0] #CONTROLLER DATA FROM THE BASESTATION
                 self.sensorData = self.controllerSensorData[1] #SENSOR DATA FROM SECOND PI
-                #print(self.controllerData)
+                print(self.controllerData)
                 if(self.controllerSensorDataTuple[1] == False):
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
@@ -95,7 +95,7 @@ class Robot_Motors:
                 self.updateOutputComponents()
 
                 # Read Sensor data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+                """
                 # Determine next state
                 if (self.driveState == "active"):
                     # TODO figure out how to read from sensors here
@@ -133,6 +133,7 @@ class Robot_Motors:
                 else:
                     # This is bad maybe throw error or set driveState to active here
                     pass
+                """
 
 
         except KeyboardInterrupt:
@@ -175,6 +176,7 @@ class Robot_Motors:
     def updateOutputComponents(self):
         for c in self.outputComponentList:
             if isinstance(c, MotorComponent):
+                print("Doing update on MotorComponent {}".format(c.name))
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
             elif isinstance(c, ServoComponent):
                 c.doUpdate(self.servoArr)
