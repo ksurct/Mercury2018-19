@@ -93,4 +93,4 @@ LED_ONE_CHANNEL = 3
 ###################################
 # State transition code
 ###################################
-DANGER_COUNT_THRESHOLD = 50 # This hasn't been tested, we can probably optimize here
+DANGER_COUNT_THRESHOLD = 30 # This hasn't been tested, we can probably optimize here

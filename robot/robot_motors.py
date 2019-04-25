@@ -77,23 +77,24 @@ class Robot_Motors:
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 
-                #TODO Do button debouncing for 90 degree turn code below (before self.updateOutputComponents)
-                #Use an object variable (self.didTurn) that is initialized to False in __init__() to do debouncing with
-                #Should probably 'continue' after doing a turn so we don't do self.updateOutputComponents
-                if (self.controllerData['b'] == 1):
-                    if (self.turn90DegFlag == False):
-                        self.turn90DegFlag = True
-                        self.turn90CW()
-                        continue
-                elif (self.controllerData['x'] == 1):
-                    if (self.turn90DegFlag == False):
-                        self.turn90DegFlag = True
-                        self.turn90CCW()
-                        continue
-                else:
-                    self.turn90DegFlag = False
+                if (self.driveState == 'active'):
+                    if (self.controllerData['b'] == 1):
+                        if (self.turn90DegFlag == False):
+                            self.turn90DegFlag = True
+                            self.turn90CW()
+                            continue
+                    elif (self.controllerData['x'] == 1):
+                        if (self.turn90DegFlag == False):
+                            self.turn90DegFlag = True
+                            self.turn90CCW()
+                            continue
+                    else:
+                        self.turn90DegFlag = False
+                    self.updateOutputComponents()
 
-                self.updateOutputComponents()
+                elif (self.driveState == 'auto'):
+                    if (self.sensorData['dsr'] < 305 and self.sensorData['dsl'] < 305):
+                        self.updateMotorComponents(forceLim=100)
 
                 # Read Sensor data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 """
@@ -101,25 +102,25 @@ class Robot_Motors:
                 if (self.driveState == "active"):
                     # TODO figure out how to read from sensors here
                     '''
-                    if (right sensor < 2in):
+                    if (self.sensorsShowDanger):
                         self.driveState = "danger"
                         dangerCount = 0
-                    elif(controller shows auto):
+                    elif(self.controllerData['se'] == 1):
                         self.driveState = "auto"
                     '''
                 elif (self.driveState == "auto"):
                     # TODO figure out how to read from sensors here
                     '''
-                    if (right sensor < 2in):
+                    if (self.sensorsShowDanger):
                         self.driveState = "danger"
                         dangerCount = 0
-                    elif(side sensor reads greater than 1 foot):
+                    elif(self.sensorData['dsr'] > 305 or self.sensorData['dsl'] > 305):
                         self.driveState = "active"
                     '''
                 elif (self.driveState == "danger"):
                     if (cd['lb'] == 1 and cd['rb'] == 1 and cd['lt'] != 0 and cd['rt'] != 0):
                         # TODO update motors
-                        pass
+                        self.updateMotorComponents()
                     elif (dangerCount > DANGER_COUNT_THRESHOLD):
                         self.driveState = 'dangerActive'
                         dangerCount = 0
@@ -128,7 +129,7 @@ class Robot_Motors:
                 elif (self.driveState == "dangerActive"):
                     # TODO figure out how to read from sensors here
                     '''
-                    if(sensors > 3-4 inches):
+                    if(self.sensorsShowDanger() == False):
                         self.dangerState = "active"
                     '''
                 else:
@@ -143,6 +144,12 @@ class Robot_Motors:
             #ensure robot loop gets closed
             self.logger.info("Event loop closed. Exiting program")
             GPIO.cleanup()
+
+    def sensorsShowDanger(self):
+        for s in self.sensorData:
+            if (self.sensorData[s] < 52 and s != 'dfr'): #We have the check for not dfr since that's the one in front of picky-uppy
+                return True
+        return False
 
     def turn90CW(self):
         for m in self.outputComponentList:
@@ -186,10 +193,10 @@ class Robot_Motors:
             elif isinstance(c, LEDComponent):
                 c.doUpdate(self.controllerData['hl'])
 
-    def updateMotorComponents(self):
+    def updateMotorComponents(self, forceLim=40):
         for c in self.outputComponentList:
             if isinstance(c, MotorComponent):
-                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], 40) #Force limit of 40 so we move slowly
+                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], forceLim) #Force limit of 40 so we move slowly
                 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
