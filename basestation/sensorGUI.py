@@ -19,37 +19,37 @@ class SensorGUI(tk.Frame):
         self.grid()
 
         # Front left quad encoder
-        self.t_qfl = "Quad Front Left: "
+        self.t_qfl = "Front Left Wheel"# "Quad Front Left: "
         self.tv_qfl = tk.StringVar()
-        self.tv_qfl.set(self.t_qfl + str(-1))
+        self.tv_qfl.set(self.t_qfl)# + str(-1))
         self.lbl_qfl = tk.Label(self, textvariable=self.tv_qfl)
         self.lbl_qfl.grid(column=0, row=1, padx=5, pady=5)
 
         #Front right quad encoder
-        self.t_qfr = "Quad Front Right: "
+        self.t_qfr = "Front Right Wheel" #"Quad Front Right: "
         self.tv_qfr = tk.StringVar()
-        self.tv_qfr.set(self.t_qfr + str(-1))
+        self.tv_qfr.set(self.t_qfr)# + str(-1))
         self.lbl_qfr = tk.Label(self, textvariable=self.tv_qfr)
         self.lbl_qfr.grid(column=4, row=1, padx=5, pady=5)
 
         #Back left quad encoder
-        self.t_qbl = "Quad Back Left: "
+        self.t_qbl = "Back Left Wheel" #"Quad Back Left: "
         self.tv_qbl = tk.StringVar()
-        self.tv_qbl.set(self.t_qbl + str(-1))
+        self.tv_qbl.set(self.t_qbl)# + str(-1))
         self.lbl_qbl = tk.Label(self, textvariable=self.tv_qbl)
         self.lbl_qbl.grid(column=0, row=5, padx=5, pady=5)
 
         #Back right quad encoder
-        self.t_qbr = "Quad Back Right: "
+        self.t_qbr = "Back Right Wheel" #"Quad Back Right: "
         self.tv_qbr = tk.StringVar()
-        self.tv_qbr.set(self.t_qbr + str(-1))
+        self.tv_qbr.set(self.t_qbr)# + str(-1))
         self.lbl_qbr = tk.Label(self, textvariable=self.tv_qbr)
         self.lbl_qbr.grid(column=4, row=5, padx=5, pady=5)
 
         #Front left distance sensor
         self.t_dfl = "Front left: "
         self.tv_dfl = tk.StringVar()
-        self.tv_dfl.set(self.t_dfl + str(-1))
+        self.tv_dfl.set(self.t_dfl)# + str(-1))
         self.lbl_dfl = tk.Label(self, textvariable=self.tv_dfl)
         self.lbl_dfl.grid(column=1, row=1, padx=5, pady=5)
 
@@ -75,9 +75,9 @@ class SensorGUI(tk.Frame):
         self.lbl_dsr.grid(column=4, row=2, padx=5, pady=5)
 
         #Arm distance sensor
-        self.t_da = "Arm: "
+        self.t_da = "Arm"
         self.tv_da = tk.StringVar()
-        self.tv_da.set(self.t_da + str(-1))
+        self.tv_da.set(self.t_da)# + str(-1))
         self.lbl_da = tk.Label(self, textvariable=self.tv_da)
         self.lbl_da.grid(column=0, row=0, padx=5, pady=5)
 
@@ -101,11 +101,11 @@ class SensorGUI(tk.Frame):
         self.tv_dfr.set(self.t_dfr + str(valueDict['dfr']))
         self.tv_dsl.set(self.t_dfl + str(valueDict['dsl']))
         self.tv_dsr.set(self.t_dsl + str(valueDict['dsr']))
-        self.tv_da.set(self.t_da + str(valueDict['da']))
-        self.tv_qbl.set(self.t_qbl + str(valueDict['qbl']))
-        self.tv_qbr.set(self.t_qbr + str(valueDict['qbr']))
-        self.tv_qfl.set(self.t_qfl + str(valueDict['qfl']))
-        self.tv_qfr.set(self.t_qfr + str(valueDict['qfr']))
+        #self.tv_da.set(self.t_da + str(valueDict['da']))
+        #self.tv_qbl.set(self.t_qbl + str(valueDict['qbl']))
+        #self.tv_qbr.set(self.t_qbr + str(valueDict['qbr']))
+        #self.tv_qfl.set(self.t_qfl + str(valueDict['qfl']))
+        #self.tv_qfr.set(self.t_qfr + str(valueDict['qfr']))
 
     def testUpdate(self):
         valueDict = {

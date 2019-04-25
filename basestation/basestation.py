@@ -20,8 +20,8 @@ class SensorDataLock:
     def __init__(self):
         self.lock = Lock()
         self.values = {
-			'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
-			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0, 'da': 0
+			#'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
+			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0 #, 'da': 0
 		}
 
     def requestData(self):
