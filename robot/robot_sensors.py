@@ -39,10 +39,10 @@ class Robot_Sensors:
         # TODO does this need to be a dictionary to
         #  work with the for loop
         self.sensorList = {
-            'dfr' : tof0,
-            'dfl' : tof1,
-            'dsl' : tof2,
-            'dsr' : tof3
+            'dfr' : tof1,
+            'dfl' : tof2,
+            'dsl' : tof3,
+            'dsr' : tof0
         }
 
         # This was the ranging mode that we tested with.
@@ -59,10 +59,10 @@ class Robot_Sensors:
         lpf3 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
 
         self.lfp_list = {
-            'dfr' : lpf0,
-            'dfl' : lpf1,
-            'dsl' : lpf2,
-            'dsr' : lpf3
+            'dfr' : lpf1,
+            'dfl' : lpf2,
+            'dsl' : lpf3,
+            'dsr' : lpf0
         }
 
         self.sensorValues = {
