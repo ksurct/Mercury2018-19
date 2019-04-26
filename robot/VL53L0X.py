@@ -64,8 +64,12 @@ def i2c_write(address, reg, data_p, length):
 
     return ret_val
 
-# Load VL53L0X shared lib 
-tof_lib = CDLL("/home/pi/Desktop/Mercury2018-19/robot/vl53l0x_python.so")
+# Load VL53L0X shared lib
+tof_lib = ''
+try:
+    tof_lib = CDLL("/home/pi/Desktop/Mercury2018-19/robot/vl53l0x_python.so")
+except:
+    tof_lib = CDLL("/home/pi/Desktop/mercury18-19Code/Mercury2018-19/robot/vl53l0x_python.so")
 
 # Create read function pointer
 READFUNC = CFUNCTYPE(c_int, c_ubyte, c_ubyte, POINTER(c_ubyte), c_ubyte)

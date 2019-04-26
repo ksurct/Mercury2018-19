@@ -29,6 +29,7 @@ class Robot_Motors:
         # danger - The front right sensor is reading a wall too close, stop movement momentarily
         # dangerActive - The front right sensor is reading too close, but we've waited long enough to be able to move
         self.driveState = "active" # default to active
+        self.outOfAuto = False
 
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
@@ -65,6 +66,7 @@ class Robot_Motors:
             print("Right before while true")
             while True:
                 #Get controller data and update motors, servos, LEDs
+                """
                 self.controllerSensorDataTuple = self.network.getControllerAndSensorStatus()
                 self.controllerSensorData = self.controllerSensorDataTuple[0]
                 self.controllerData = self.controllerSensorData[0] #CONTROLLER DATA FROM THE BASESTATION
@@ -75,50 +77,64 @@ class Robot_Motors:
                     sleep(2)
                     self.updateMotorComponents()
                     continue #This goes back to the top of the while loop and forces us to get new controller values
+                """
+                self.controllerDataTuple = self.network.getControllerStatus()
+                self.controllerData = self.controllerDataTuple[0]
+                if(self.controllerDataTuple[1] == False):
+                    self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
+                    sleep(2)
+                    self.updateMotorComponents()
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 
-                if (self.driveState == 'active'):
-                    if (self.controllerData['b'] == 1):
-                        if (self.turn90DegFlag == False):
-                            self.turn90DegFlag = True
-                            self.turn90CW()
-                            continue
-                    elif (self.controllerData['x'] == 1):
-                        if (self.turn90DegFlag == False):
-                            self.turn90DegFlag = True
-                            self.turn90CCW()
-                            continue
-                    else:
-                        self.turn90DegFlag = False
+                #if (self.driveState == 'active'):
+                if (self.controllerData['b'] == 1):
+                    if (self.turn90DegFlag == False):
+                        self.turn90DegFlag = True
+                        self.turn90CW()
+                        continue
+                elif (self.controllerData['x'] == 1):
+                    if (self.turn90DegFlag == False):
+                        self.turn90DegFlag = True
+                        self.turn90CCW()
+                        continue
+                else:
+                    self.turn90DegFlag = False
                     self.updateOutputComponents()
-
+                """
                 elif (self.driveState == 'auto'):
                     if (self.sensorData['dsr'] < 305 and self.sensorData['dsl'] < 305):
-                        self.updateMotorComponents(forceLim=100)
-
+                        self.updateMotorComponents(forceLim=100, auto=True)
+                    else:
+                        self.driveState = 'active'
+                        self.outOfAuto = True
+                        
+                elif (self.driveState == 'dangerActive'):
+                    self.updateOutputComponents()
+                
                 # Read Sensor data ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                """
+                
                 # Determine next state
                 if (self.driveState == "active"):
                     # TODO figure out how to read from sensors here
-                    '''
-                    if (self.sensorsShowDanger):
+                    
+                    if (self.sensorsShowDanger()):
                         self.driveState = "danger"
                         dangerCount = 0
-                    elif(self.controllerData['se'] == 1):
+                    elif(self.controllerData['se'] == 1 and self.outOfAuto == False):
                         self.driveState = "auto"
-                    '''
+                    else:
+                        self.outOfAuto = False
+                    
                 elif (self.driveState == "auto"):
                     # TODO figure out how to read from sensors here
-                    '''
-                    if (self.sensorsShowDanger):
+                    if (self.sensorsShowDanger()):
                         self.driveState = "danger"
                         dangerCount = 0
                     elif(self.sensorData['dsr'] > 305 or self.sensorData['dsl'] > 305):
                         self.driveState = "active"
-                    '''
+                    
                 elif (self.driveState == "danger"):
-                    if (cd['lb'] == 1 and cd['rb'] == 1 and cd['lt'] != 0 and cd['rt'] != 0):
+                    if (self.controllerData['lb'] == 1 and self.controllerData['rb'] == 1 and self.controllerData['lt'] != 0 and self.controllerData['rt'] != 0):
                         # TODO update motors
                         self.updateMotorComponents()
                     elif (dangerCount > DANGER_COUNT_THRESHOLD):
@@ -128,13 +144,13 @@ class Robot_Motors:
                         dangerCount += 1
                 elif (self.driveState == "dangerActive"):
                     # TODO figure out how to read from sensors here
-                    '''
+                    
                     if(self.sensorsShowDanger() == False):
                         self.dangerState = "active"
-                    '''
+                    
                 else:
                     # This is bad maybe throw error or set driveState to active here
-                    pass
+                    self.driveState = 'active'
                 """
 
 
@@ -144,13 +160,13 @@ class Robot_Motors:
             #ensure robot loop gets closed
             self.logger.info("Event loop closed. Exiting program")
             GPIO.cleanup()
-
+    """
     def sensorsShowDanger(self):
         for s in self.sensorData:
-            if (self.sensorData[s] < 52 and s != 'dfr'): #We have the check for not dfr since that's the one in front of picky-uppy
+            if (self.sensorData[s] < 60 and s != 'dfr'): #We have the check for not dfr since that's the one in front of picky-uppy
                 return True
         return False
-
+    """
     def turn90CW(self):
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
@@ -193,10 +209,13 @@ class Robot_Motors:
             elif isinstance(c, LEDComponent):
                 c.doUpdate(self.controllerData['hl'])
 
-    def updateMotorComponents(self, forceLim=40):
+    def updateMotorComponents(self, forceLim=40, auto=False):
         for c in self.outputComponentList:
             if isinstance(c, MotorComponent):
-                c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], forceLim) #Force limit of 40 so we move slowly
+                if (auto == True):
+                    c.doUpdate(8191, 0, forceLim)
+                else:
+                    c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], forceLim) #Force limit of 40 so we move slowly
                 
     def updateOutputComponentsTEST(self):
         print("Controller Data: " + ctime() + " A is " + str(self.controllerData['a']))
