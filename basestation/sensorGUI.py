@@ -99,15 +99,23 @@ class SensorGUI(tk.Frame):
     def updateSensorValues(self, valueDict):
         if (valueDict['dfl'] < 52):
             self.lbl_dfl.config(foreground='red')
+        else:
+            self.lbl_dfl.config(foreground='black')
         self.tv_dfl.set(self.t_dfl + str(valueDict['dfl']))
         if (valueDict['dfr'] < 52):
             self.lbl_dfr.config(foreground='red')
+        else:
+            self.lbl_dfr.config(foreground='black')
         self.tv_dfr.set(self.t_dfr + str(valueDict['dfr']))
         if (valueDict['dsl'] < 52):
             self.lbl_dsl.config(foreground='red')
+        else:
+            self.lbl_dsl.config(foreground='black')
         self.tv_dsl.set(self.t_dsl + str(valueDict['dsl']))
         if (valueDict['dsr'] < 52):
             self.lbl_dsr.config(foreground='red')
+        else:
+            self.lbl_dsr.config(foreground='black')
         self.tv_dsr.set(self.t_dsr + str(valueDict['dsr']))
         #self.tv_da.set(self.t_da + str(valueDict['da']))
         #self.tv_qbl.set(self.t_qbl + str(valueDict['qbl']))
