@@ -149,7 +149,7 @@ if __name__ == '__main__':
         r.mainLoop()
     except Exception as e:
         print("ERROR {}".format(e))
-        #GPIO.cleanup()
+        GPIO.cleanup()
 
     """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
     t2 = Thread(target=r.sensorUpdateThreadMethod, name='SENSOR-THREAD')
