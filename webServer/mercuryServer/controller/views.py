@@ -4,6 +4,11 @@ from .models import ControllerInput
 import json
 from django.views.decorators.csrf import csrf_exempt
 
+import sys
+sys.path.append('..')
+
+from sensors.models import SensorData
+
 # Create your views here.
 
 def index(request):
@@ -24,4 +29,4 @@ def update(request, dictionary):
         setattr(controller, item, d[item])
     controller.save()
     #print(controller.a)
-    return HttpResponse("Values saved.")
+    return HttpResponse(json.dumps(SensorData.objects.get(id=1).createDictionary()))

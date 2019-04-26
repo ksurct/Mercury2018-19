@@ -33,6 +33,7 @@ class BasestationNetwork:
 	def postClientData(self, controllerData):
 		try:
 			r = requests.post(self.url + '/controller/update/' + json.dumps(controllerData) + '/')
+			return json.loads(r.text)
 			time.sleep(.1)
 		except (ConnectionRefusedError, ConnectionResetError, ConnectionError, requests.exceptions.ConnectionError) as err:
 			print("Error sending data to web server. Will retry in 2 seconds: " + time.ctime())

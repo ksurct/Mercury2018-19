@@ -78,8 +78,8 @@ class Basestation:
         'a':0, 'b': 0, 'x': 0, 'y': 0, 'st': 0, 'se': 0,
         'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
         'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
-        'u': 0, 'd': 0, 'l': 0, 'r': 0,
-        'hl': 0, 'lim': 50
+        'u': 0, 'd': 0, 'l': 0, 'r': 0
+        #'hl': 0, 'lim': 50
         }
         self.controller = Controller(0)
         self.controllerData = controlDataLock
@@ -97,8 +97,9 @@ class Basestation:
             #print("Inside try")
             while True:
                 self.postDataTest() #Gets controller data and pushes to web server
-                tempSensData = self.getDataTest() #Get sensor data from web server
-                self.sensorLock.updateData(tempSensData) #Update shared sensor dictionary
+                time.sleep(.1)
+                #tempSensData = self.getDataTest() #Get sensor data from web server
+                #self.sensorLock.updateData(tempSensData) #Update shared sensor dictionary
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt detected. Exiting now.")
 
@@ -108,7 +109,8 @@ class Basestation:
     def postDataTest(self):
         self.getControllerData()
         self.controllerData.updateController(self.tempControlData)
-        self.basestationNetwork.postClientData(self.controllerData.requestControlData())
+        sensorDict = self.basestationNetwork.postClientData(self.controllerData.requestControlData())
+        self.sensorLock.updateData(sensorDict)
 
     def getDataTest(self):
         data = self.basestationNetwork.getSensorData()
