@@ -21,30 +21,32 @@ class Queue:
     # It changes rear and size 
     def EnQueue(self, item): 
         if self.isFull(): 
-            print("Full") 
+            #print("Full") 
             return
         self.rear = (self.rear + 1) % (self.capacity) 
         self.Q[self.rear] = item 
         self.size = self.size + 1
-        print("%s enqueued to queue"  %str(item)) 
+        #print("%s enqueued to queue"  %str(item)) 
   
     # Function to remove an item from queue.  
     # It changes front and size 
     def DeQueue(self): 
         if self.isEmpty(): 
-            print("Empty") 
+            #print("Empty") 
             return
           
-        print("%s dequeued from queue" %str(self.Q[self.front])) 
+        #print("%s dequeued from queue" %str(self.Q[self.front])) 
         self.front = (self.front + 1) % (self.capacity) 
         self.size = self.size -1
           
     # Function to get front of queue 
     def que_front(self): 
         if self.isEmpty(): 
-            print("Queue is empty") 
+            #print("Queue is empty") 
+            pass
   
-        print("Front item is", self.Q[self.front]) 
+        #print("Front item is", self.Q[self.front]) 
+        pass
           
     # Function to get rear of queue 
     def que_rear(self): 

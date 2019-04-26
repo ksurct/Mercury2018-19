@@ -3,9 +3,13 @@
     All of the servos, motors, sensors, LEDs, etc. will be here.
 """
 import RPi.GPIO as GPIO
-import Adafruit_PCA9685
+try:
+    import Adafruit_PCA9685
+except:
+    pass
 from time import sleep
 from threading import Thread
+import VL53L0X
 
 GPIO.setmode(GPIO.BOARD)
 
@@ -19,19 +23,21 @@ class Component:
         raise NotImplementedError()
 
 class SensorComponent(Component): #, VL53L0X_Channel_num):
-    def __init__(self, name, channel):
-        self.baseSensor = ''
-        self.channel = channel
+    def __init__(self, name, mult_addr, sens_channel):
+        self.name = name
+        self.sensorObject = VL53L0X.VL53L0X(TCA9548A_Num=sens_channel, TCA9548A_Addr=mult_addr)
+        self.sensorObject.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
     def __del__(self):
         #Don't know if we will use anything here
+        self.sensorObject.stop_ranging()
         pass
 
     def getSensorValues(self):
         #Get sensor values from robot asynchronously and return them in some data type
-        pass
+        return self.sensorObject.get_distance()
 
-    def doUpdate(self, value):
+    def doUpdate(self):
         return self.getSensorValues()
 
 class MotorComponent():

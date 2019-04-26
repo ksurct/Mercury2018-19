@@ -9,10 +9,9 @@ from time import sleep, ctime
 from random import randint
 from threading import Thread
 from networking import RobotNetwork
-#from components import *
+from components import SensorComponent
 import RPi.GPIO as GPIO
 from settings import * # this gets us constants such as WEB_SERVER_ADDRESS
-import VL53L0X
 import Queue_for_lpf as QueueLPF
 
 class Robot_Sensors:
@@ -31,6 +30,7 @@ class Robot_Sensors:
         
         # Create our list of sensors. The first input argument is the channel on 
         # the multiplexer.
+        """
         tof0 = VL53L0X.VL53L0X(TCA9548A_Num=TOF0_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR) #TCA9548A_I2C_ADDR = 0x70
         tof1 = VL53L0X.VL53L0X(TCA9548A_Num=TOF1_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
         tof2 = VL53L0X.VL53L0X(TCA9548A_Num=TOF2_CHANNEL_NUM, TCA9548A_Addr=TCA9548A_I2C_ADDR)
@@ -44,14 +44,15 @@ class Robot_Sensors:
             'dsl' : tof3,
             'dsr' : tof0
         }
-
+        
         # This was the ranging mode that we tested with.
         # Maybe we can optimize this further, if we want.
         tof0.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         tof1.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         tof2.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
         tof3.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
-
+        
+        
         # Create our Queues for filtering
         lpf0 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
         lpf1 = QueueLPF.Queue(SENSOR_FILTERING_QUEUE_LEN)
@@ -64,7 +65,14 @@ class Robot_Sensors:
             'dsl' : lpf3,
             'dsr' : lpf0
         }
-
+        """
+        self.sensorList = [
+            SensorComponent(name="dfr", mult_addr=TCA9548A_I2C_ADDR, sens_channel=1),
+            SensorComponent(name="dfl", mult_addr=TCA9548A_I2C_ADDR, sens_channel=2),
+            SensorComponent(name="dsl", mult_addr=TCA9548A_I2C_ADDR, sens_channel=3),
+            SensorComponent(name="dsr", mult_addr=TCA9548A_I2C_ADDR, sens_channel=0),
+        ]
+        
         self.sensorValues = {
             'dfr': 0, 
             'dfl': 0, 
@@ -73,13 +81,17 @@ class Robot_Sensors:
         }
         
         # Setup timing for sensors
-        self.timing = tof0.get_timing()
+        self.timing = 0
+        for s in self.sensorList:
+            temp = s.sensorObject.get_timing()
+            if (temp > self.timing):
+                self.timing = temp
         if (self.timing < 20000):
             self.timing = 20000
         
     def __del__(self):
         for s in self.sensorList:
-            self.sensorList[s].stop_ranging()
+            s.sensorObject.stop_ranging()
 
     def mainLoop(self):
         try:
@@ -104,20 +116,22 @@ class Robot_Sensors:
             #self.sensorValues[s] = self.sensorList[s].get_distance()
             
             # Get the distance from the cooresponding sensor
-            distance = self.sensorList[s].get_distance()
+            distance = s.doUpdate()
             if (distance == 0):
                 continue
             
+            """
             # If full, create room the the next input
             if self.lfp_list[s].isFull():
                 self.lfp_list[s].DeQueue()
 
             # Add the distance to the queue
             self.lfp_list[s].EnQueue(distance)
-
+            
             # Set the sensor value equal to the average
             self.sensorValues[s] = self.lfp_list[s].get_avg_val()
-            
+            """
+            self.sensorValues[s.name] = distance
 
 
     def updateSensorValuesTEST(self):
@@ -135,7 +149,7 @@ if __name__ == '__main__':
         r.mainLoop()
     except Exception as e:
         print("ERROR {}".format(e))
-        GPIO.cleanup()
+        #GPIO.cleanup()
 
     """t1 = Thread(target=r.outputComponentThreadMethod, name='OUTPUT-COMP-THREAD')
     t2 = Thread(target=r.sensorUpdateThreadMethod, name='SENSOR-THREAD')
