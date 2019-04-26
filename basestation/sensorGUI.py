@@ -5,7 +5,7 @@ import random
 
 """
     Sensor list for base tests:
-        1 quad encoder on each wheel (front left, front right, back left, back right)
+        1 quad encoder on each wheel (front left, front right, back left, back right) NOT USING QUAD ENCODERS
         1 distance sensor on each side of robot (front, back, left, right)
 """
 
@@ -97,10 +97,18 @@ class SensorGUI(tk.Frame):
         self.btn_lim.grid(column=0, row=7, padx=5, pady=5)
     
     def updateSensorValues(self, valueDict):
+        if (valueDict['dfl'] < 52):
+            self.lbl_dfl.config(foreground='red')
         self.tv_dfl.set(self.t_dfl + str(valueDict['dfl']))
+        if (valueDict['dfr'] < 52):
+            self.lbl_dfr.config(foreground='red')
         self.tv_dfr.set(self.t_dfr + str(valueDict['dfr']))
-        self.tv_dsl.set(self.t_dfl + str(valueDict['dsl']))
-        self.tv_dsr.set(self.t_dsl + str(valueDict['dsr']))
+        if (valueDict['dsl'] < 52):
+            self.lbl_dsl.config(foreground='red')
+        self.tv_dsl.set(self.t_dsl + str(valueDict['dsl']))
+        if (valueDict['dsr'] < 52):
+            self.lbl_dsr.config(foreground='red')
+        self.tv_dsr.set(self.t_dsr + str(valueDict['dsr']))
         #self.tv_da.set(self.t_da + str(valueDict['da']))
         #self.tv_qbl.set(self.t_qbl + str(valueDict['qbl']))
         #self.tv_qbr.set(self.t_qbr + str(valueDict['qbr']))

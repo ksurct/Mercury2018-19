@@ -79,6 +79,7 @@ class Basestation:
         'rt': 0, 'lt': 0, 'rb': 0, 'lb': 0,
         'rsx': 0, 'rsy': 0, 'lsx': 0, 'lsy': 0,
         'u': 0, 'd': 0, 'l': 0, 'r': 0,
+        'hl': 0, 'lim': 50
         }
         self.controller = Controller(0)
         self.controllerData = controlDataLock
