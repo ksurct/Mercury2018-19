@@ -37,6 +37,9 @@ class Robot_Motors:
         # Read more at: https://codeburst.io/understanding-solid-principles-open-closed-principle-e2b588b6491f
         
         GPIO.cleanup()
+        #leds = LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT, LED_ONE_CHANNEL)
+        
+        
         self.outputComponentList = [
             # motors
 
@@ -52,9 +55,16 @@ class Robot_Motors:
             ServoComponent(SERVO_CAM_NAME, SERVO_CAM_CHANNEL, SERVO_CAM_PRESET_DICT, SERVO_CAM_MIN, SERVO_CAM_MAX),
 
             # leds
-
             LEDComponent(LED_ONE_NAME, LED_ONE_CONTROLLER_INPUT, LED_ONE_CHANNEL)
         ]
+        #leds.doUpdate(1)
+        for s in self.outputComponentList:
+            if (isinstance(s, LEDComponent)):
+                s.doUpdate(1)
+                
+        self.counter = 0
+        
+        
 		
     def __del__(self):
         GPIO.cleanup()
@@ -78,14 +88,18 @@ class Robot_Motors:
                     self.updateMotorComponents()
                     continue #This goes back to the top of the while loop and forces us to get new controller values
                 """
+                #self.counter += 1 #DEBUG
+                #print("Getting controller status... {}".format(self.counter)) #DEBUG
                 self.controllerDataTuple = self.network.getControllerStatus()
+                #print("Done with controller status...") #DEBUG
                 self.controllerData = self.controllerDataTuple[0]
                 if(self.controllerDataTuple[1] == False):
+                    self.updateMotorComponents()
                     self.logger.info("Unable to get controller data. Trying again soon.") #Shows error message and current time
                     sleep(2)
-                    self.updateMotorComponents()
                 self.servoArr = [self.controllerData['u'], self.controllerData['d'], self.controllerData['l'], self.controllerData['r'], self.controllerData['lsy']]  
                 
+                #print("Going into main if...") #DEBUG
                 #if (self.driveState == 'active'):
                 if (self.controllerData['b'] == 1):
                     if (self.turn90DegFlag == False):
@@ -99,7 +113,9 @@ class Robot_Motors:
                         continue
                 else:
                     self.turn90DegFlag = False
+                    #print("Updating output components...") #DEBUG
                     self.updateOutputComponents()
+                #print("End of loop") #DEBUG
                 """
                 elif (self.driveState == 'auto'):
                     if (self.sensorData['dsr'] < 305 and self.sensorData['dsl'] < 305):
@@ -199,6 +215,7 @@ class Robot_Motors:
     
     def updateOutputComponents(self):
         for c in self.outputComponentList:
+            #print("Updating {}".format(c.name)) #DEBUG
             if isinstance(c, MotorComponent):
                 #print("Doing update on MotorComponent {}".format(c.name))
                 c.doUpdate(self.controllerData[c.controllerInput], self.controllerData[c.backwardInput], self.controllerData['lim'])
@@ -206,8 +223,8 @@ class Robot_Motors:
                 c.doUpdate(self.servoArr)
             elif isinstance(c, LauncherServoComponent):
                 c.doUpdate(self.controllerData[c.controllerInput])
-            elif isinstance(c, LEDComponent):
-                c.doUpdate(self.controllerData['hl'])
+            #elif isinstance(c, LEDComponent):
+                #c.doUpdate(self.controllerData['hl'])
 
     def updateMotorComponents(self, forceLim=40, auto=False):
         for c in self.outputComponentList:
