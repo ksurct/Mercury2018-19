@@ -1,6 +1,16 @@
 """
     Class that will hold all networking information for the Pi.
     This class will define the GET request for controller data, as well as the UPDATE request for sensor data.
+    Same as the basestation networking controller, we use the requests library here.
+        The requests class is blocking, meaning that the Pi doesn't do anything while the request call is waiting for data from the server.
+        This can hurt the performance of the robot, especially if the web server is a long distance from the robot or is bogged down (which should never happen).
+        Ideal control loop for the robot with asynchronous networking:
+            Make async call to server to get controller data
+            While waiting on the controller call to return, get the readings of the sensors (possibly asynchronously)
+            When we get the updated controller data, send the sensor information to the server asynchronously
+            While waiting on the response from the server, update the motor and servo positions according to the controller data we got from the first step
+            When we get a response from the server about the sensor data, go back to the top of the loop
+        This would let us process the data to/from the server while we are waiting on the response from the server for data we just sent/received instead of waiting on a response and then doing something with the data
 """
 import requests
 import json

@@ -1,5 +1,11 @@
 """
 	File that will hold the networking class to interface with the web server.
+	We use the requests library to do all of the web calls that we need.
+		Pro of requests:
+			Super easy to use
+		Con of requests:
+			Blocking class, meaning that the program will sit and do nothing while we wait on a response from the server. 
+				This isn't that big of a problem on the basestation, but it is a bigger issue on the robot.
 """
 import json
 import requests

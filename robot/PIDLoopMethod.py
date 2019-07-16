@@ -16,9 +16,9 @@ def updateSpeed(self):
 	
 	prev_error = error
 	
-	if (adjust < 0)
+	if (adjust < 0):
 		right_speed = 1
 		left_speed += adjust
-	else 
+	else:
 		left_speed = 1
 		right_speed -= adjust

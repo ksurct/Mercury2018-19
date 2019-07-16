@@ -1,7 +1,8 @@
 ''' xbox.py
 
-    Responsable for getting information directly from controller
+    Responsible for getting information directly from controller
     Courtesy Aaron Schif, former member
+    Don't touch this file, it's perfect.
 '''
 
 from math import isclose

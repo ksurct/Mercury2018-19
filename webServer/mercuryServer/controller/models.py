@@ -1,7 +1,7 @@
 from django.db import models
 
 class ControllerInput(models.Model):
-    a = models.IntegerField(default = 0)
+    a = models.IntegerField(default = 0) #nned to include these default values so the server is happy
     b = models.IntegerField(default = 0)
     x = models.IntegerField(default = 0)
     y = models.IntegerField(default = 0)

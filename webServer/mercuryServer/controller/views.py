@@ -27,6 +27,6 @@ def update(request, dictionary):
     #print(d['a'])
     for item in d:
         setattr(controller, item, d[item])
-    controller.save()
+    controller.save() #need to make sure to save the object to the server
     #print(controller.a)
     return HttpResponse(json.dumps(SensorData.objects.get(id=1).createDictionary()))

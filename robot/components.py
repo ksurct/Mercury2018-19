@@ -13,6 +13,10 @@ import VL53L0X
 
 GPIO.setmode(GPIO.BOARD)
 
+"""
+    Generic component class that is inherited by all the other component classes.
+    This allows us to make sure that each class has a doUpdate method
+"""
 class Component:
     def __init__(self, controllerInput):
         #Make sure that everything has an init method
@@ -22,24 +26,30 @@ class Component:
         #Make sure everything has a method that can be called by the main method
         raise NotImplementedError()
 
-class SensorComponent(Component): #, VL53L0X_Channel_num):
+"""
+    Sensor class to get the value from each sensor and return it to the main class
+"""
+class SensorComponent(Component):
     def __init__(self, name, mult_addr, sens_channel):
         self.name = name
         self.sensorObject = VL53L0X.VL53L0X(TCA9548A_Num=sens_channel, TCA9548A_Addr=mult_addr)
         self.sensorObject.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
     def __del__(self):
-        #Don't know if we will use anything here
         self.sensorObject.stop_ranging()
         pass
 
     def getSensorValues(self):
-        #Get sensor values from robot asynchronously and return them in some data type
+        #Get sensor values from robot asynchronously (not this year...) and return them in some data type
         return self.sensorObject.get_distance()
 
     def doUpdate(self):
         return self.getSensorValues()
 
+"""
+    Class for the driving motors
+    The motors that we used interacted nice with the native PWM library on the Raspberry Pi
+"""
 class MotorComponent():
     def __init__(self, name, controllerInput, backwardInput, directionPin, pwmPin):
         GPIO.setmode(GPIO.BOARD)
@@ -94,6 +104,11 @@ class MotorComponent():
         else:
             print("Not updating the motor")
 
+"""
+    Servo control object.
+    We tried to do an s-curve type approach to possibly reduce some of the jerk on the servo, but we started that project too late in the build for it to be viable.
+        Maybe have a couple newer members start on this to see if there is a good way to do it?
+"""
 class ServoComponent(Component):
     def __init__(self, name, channel, presetDict, minVal, maxVal):
         self.pwm = Adafruit_PCA9685.PCA9685()
@@ -172,6 +187,9 @@ class ServoComponent(Component):
         """
         self.updatePosition(valueArr)
 
+    """
+        This worked better on paper than on the actual servo. Trust me.
+    """
     def sCurve(self, on, start, relativeAngle, upperbound=4095, delayTime=0.08):
         for i in range(-14, 14):
             value = start + (1/(1+2.7**(-i/2 * (1/2)))) * ((relativeAngle/270) * upperbound)
@@ -179,6 +197,16 @@ class ServoComponent(Component):
             sleep(delayTime + abs(i**2 / 10000))
             self.pwm.set_pwm(self.channel,on,int(value + 0.5))
 
+"""
+    Launcher motor object
+    You may be asking yourself, "Gee guys, why didn't you just use the MotorComponent class from above for the launcher motor? They're all motors, right? So they should work together?"
+    https://i.kym-cdn.com/photos/images/original/001/461/040/fcd.jpg
+    The motors that drive the robot (using the class above) run on PWM. This is very nice to run with the Pi.
+    This motor, on the other hand, does not use PWM. It uses PPM. Which is sort of like PWM, but not.
+    Since this motor is PPM, it took much more work than it should to figure out how to translate its values into PWM, which the Pi is able to handle (it can't handle PWM)
+    
+    TL:DR - Don't use PPM if you can help it. If it's your only option, it's possible, but it sucks.
+"""
 class LauncherServoComponent(Component):
     def __init__(self, name, channel, controllerInput):
         self.pwm = Adafruit_PCA9685.PCA9685()
@@ -221,7 +249,11 @@ class LauncherServoComponent(Component):
         #self.pwm.set_pwm_freq(333)
         self.pwm.set_pwm(self.channel, 0, 1800)
 
-
+"""
+    Object to control the LED headlights. 
+    They run through the Adafruit board, so we basically tell them all the way on or all the way off.
+    We could do something where we set the headlights to 1/2 or 3/4 power or some other fraction, but why would we do that? That's no fun.
+"""
 class LEDComponent(Component):
     def __init__(self, name, controllerInput, channel):
         self.name = name

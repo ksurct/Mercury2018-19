@@ -117,6 +117,9 @@ class Robot_Motors:
                     self.updateOutputComponents()
                 #print("End of loop") #DEBUG
                 """
+                Once again, we tried to do too much cool stuff with not enough time left before the competition
+                This would also be a cool project for someone to focus on (probably an older member with a little more experience on how the control flow of the robot has worked previously)
+
                 elif (self.driveState == 'auto'):
                     if (self.sensorData['dsr'] < 305 and self.sensorData['dsl'] < 305):
                         self.updateMotorComponents(forceLim=100, auto=True)
@@ -183,6 +186,10 @@ class Robot_Motors:
                 return True
         return False
     """
+
+    """
+        Should probably have made these methods in the MotorComponent class, but time crunch and all
+    """
     def turn90CW(self):
         for m in self.outputComponentList:
             if (isinstance(m, MotorComponent)):
@@ -213,6 +220,10 @@ class Robot_Motors:
                 elif ('right' in m.name):
                     m.doUpdate(0, 0, 100)
     
+    """
+        This method updates all of the motors, servos, and LEDs based on the controller data.
+        Ideally we would only need to have one version of the doUpdate method so we don't have to call it with different parameters for each output type, but time crunch and all
+    """
     def updateOutputComponents(self):
         for c in self.outputComponentList:
             #print("Updating {}".format(c.name)) #DEBUG

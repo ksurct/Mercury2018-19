@@ -21,8 +21,6 @@ class Robot_Sensors:
         logging.basicConfig(format="%(name)s: %(levelname)s: %(asctime)s: %(message)s", level=logging.INFO)
         self.logger = logging.getLogger(__name__)
 
-
-
         # To create a new output component (motor, servo, led), add a constructor here in the appropriate list, 
         # and create cooresponding fields in settings.py (ie, MOTOR_ONE_NAME). 
         # We like to keep these constants defined in settings.py in order to follow the Open / Close principle of software design.
@@ -93,6 +91,13 @@ class Robot_Sensors:
         for s in self.sensorList:
             s.sensorObject.stop_ranging()
 
+    """
+        Main loop to get values from each sensor.
+        We tried to set up a queue to get an average over the last 5 or so sensor readings, but again, we started this too late to get it to work well.
+        We saw that there were times that some sensor would randomly read a 0 or a super large value, so it would potentially trigger an alert that would go off if a sensor value got too low.
+        Our idea was that if we took the average of the past few readings, that would negate some of the effect of the bad value.
+        In the end though, we just got skipped over the 0 value
+    """
     def mainLoop(self):
         try:
             while True:

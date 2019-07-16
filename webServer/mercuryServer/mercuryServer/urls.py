@@ -17,6 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from controller import views
 
+"""
+    Base url file for the server
+    This directs the server to the correct sub-url file depending on whatever path it sees first
+"""
 urlpatterns = [
     path('admin/', admin.site.urls),
     #path('update/<str:dictionary>/', views.update, name='update'),

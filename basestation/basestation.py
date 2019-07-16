@@ -1,13 +1,8 @@
 """
     This is the file that will hold the main loop for the basestation.
     It will get input from the controller, pass that controller input onto the web server, and get sensor data from the same web server.
-    Receiving the camera stream may also come through this, or it may come through a web service somewhere. TBD.
 """
 
-"""
-    We might want to set up some GUI for sensor data to change values based on what we get from the robot.
-    This might be set up somewhere else and we call it from here and call methods to change values as needed.
-"""
 from xbox import Controller
 import logging
 from networking import BasestationNetwork
@@ -16,21 +11,24 @@ import requests
 from sensorGUI import SensorGUI
 from threading import Thread, Lock
 
+"""
+    We use this lock class to make sure that only one thread is accessing the data at once.
+    This prevents dirty reads, which is where one thread is reading data as another thread is writing to it, meaning the first thread is reading old data.
+"""
 class SensorDataLock:
     def __init__(self):
         self.lock = Lock()
         self.values = {
-			#'qfr': 0, 'qfl': 0, 'qbr': 0, 'qbl': 0,
-			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0 #, 'da': 0
+			'dfl': 0, 'dfr': 0, 'dsl': 0, 'dsr': 0 
 		}
 
     def requestData(self):
-        self.lock.acquire()
+        self.lock.acquire() #gives the lock to the thread once it is available
         tempValues = -1
         try:
             tempValues = self.values
         finally:
-            self.lock.release()
+            self.lock.release() #returns the lock to any thread
             return tempValues
 
     def updateData(self, newValues):
@@ -40,6 +38,9 @@ class SensorDataLock:
         finally:
             self.lock.release()
 
+"""
+    Same idea as the lock above, only this is for the controller data as opposed to sensor data
+"""
 class ControlDataLock():
     def __init__(self):
         self.lock = Lock()
@@ -69,6 +70,9 @@ class ControlDataLock():
             self.data[g] = data[g]
         self.lock.release()
 
+"""
+    Main driving class behind the basestation and GUI
+"""
 class Basestation:
     def __init__(self, sensorLock=None, controlDataLock=None):
         print("Calibration in progress... DO NOT TOUCH CONTROLLER!!!!!!!!!!!")
@@ -87,6 +91,11 @@ class Basestation:
         #self.basestationNetwork = BasestationNetwork('70.179.163.182:8000') #address for Dummy at Reece's apartment - subject to change closer to comp
         self.basestationNetwork = BasestationNetwork('localhost:8000') #address for server running on this computer
 
+    """
+        Main loop for the basestation class. This is where we get controller data and send it to the server. 
+        The postDataTest method will get data from the controller, update the lock object, then send that data to the web server.
+        When sending controller data to the web server, the response is the latest sensor information on the server. See server comments as to why this is.
+    """
     def mainLoop(self):
         # Setup Logging
         logging.basicConfig(format='%(name)s: %(levelname)s: %(asctime)s: %(message)s', level=logging.INFO)
@@ -112,7 +121,7 @@ class Basestation:
         sensorDict = self.basestationNetwork.postClientData(self.controllerData.requestControlData())
         self.sensorLock.updateData(sensorDict)
 
-    def getDataTest(self):
+    def getDataTest(self): #This method isn't used anymore - everything goes through the poorly-named postDataTest method
         data = self.basestationNetwork.getSensorData()
         return data
 
@@ -142,7 +151,14 @@ class Basestation:
         self.tempControlData['r'] = 1 if str(self.controller.hat).strip() == 'r' else 0
 
         #print(self.controllerData)
-        
+
+"""
+    This is the code that is run when the script is called from the command line.
+    It created instances of all objects needed to run the basestation and starts a thread to run the basestation class.
+    The reason we start a thread of the basestation class instead of the GUI class is that the GUI must run on the thread that the script was started from.
+        This is a limitation of the Tkinter framework, nothing we can do about it.
+    This program runs until the GUI is closed.
+"""
 if __name__ == '__main__':
     sdl = SensorDataLock()
     cdl = ControlDataLock()

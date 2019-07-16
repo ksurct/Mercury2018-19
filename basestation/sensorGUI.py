@@ -9,7 +9,13 @@ import random
         1 distance sensor on each side of robot (front, back, left, right)
 """
 
+"""
+    Class that controls the sensor GUI. 
+"""
 class SensorGUI(tk.Frame):
+    """
+        Setting up the layout of the GUI
+    """
     def __init__(self, master=None, sensorLock=None, controlDataLock=None):
         self.sensorLock = sensorLock
         self.controlDataLock = controlDataLock
@@ -96,6 +102,9 @@ class SensorGUI(tk.Frame):
         self.btn_lim = tk.Button(master, command=self.updateLim, text="Update Motor Limiter")
         self.btn_lim.grid(column=0, row=7, padx=5, pady=5)
     
+    """
+        Updating the values shown on the GUI based on the dictionary of sensor values passed in
+    """
     def updateSensorValues(self, valueDict):
         if (valueDict['dfl'] < 52):
             self.lbl_dfl.config(foreground='red')
@@ -123,6 +132,10 @@ class SensorGUI(tk.Frame):
         #self.tv_qfl.set(self.t_qfl + str(valueDict['qfl']))
         #self.tv_qfr.set(self.t_qfr + str(valueDict['qfr']))
 
+    """
+        Method that tests out the GUI by selecting random values for the sensors. 
+        Essentially tests that all values update (doesn't test that they update to correct values)
+    """
     def testUpdate(self):
         valueDict = {
             'dfl': random.randint(0, 100),
@@ -138,11 +151,17 @@ class SensorGUI(tk.Frame):
         self.updateSensorValues(valueDict)
         self.after(1000, self.testUpdate)
 
+    """
+        "Main loop" of the sensor GUI. Every 100 milliseconds, we get sensor values from the lock and update the GUI
+    """
     def getSensorValues(self):
         values = self.sensorLock.requestData()
         self.updateSensorValues(values)
         self.after(100, self.getSensorValues)
 
+    """
+        Update the controller lock object to reflect parameters that are set on the GUI (headlights on/off and limiting value)
+    """
     def updateControlDataLock(self, HL):
         self.controlDataLock.updateGUIParams({'hl': HL, 'lim': self.limVal})
 
@@ -170,7 +189,9 @@ class SensorGUI(tk.Frame):
             self.updateControlDataLock(1)
 
         
-
+"""
+    This code is run if this file is run from the command line. It is basically making sure that values update.
+"""
 if __name__ == '__main__':
     gui = SensorGUI()
     gui.master.title('Sensors')
